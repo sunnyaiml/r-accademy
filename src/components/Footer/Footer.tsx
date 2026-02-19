@@ -21,14 +21,13 @@ const Footer: React.FC = () => {
             {/* Social Icons */}
             <div className="flex gap-3">
               {['Instagram', 'Twitter', 'LinkedIn', 'YouTube'].map((social) => (
-                <a
+                <button
                   key={social}
-                  href="#"
                   className="h-9 w-9 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-indigo-600 transition-all text-xs font-bold"
                   aria-label={social}
                 >
                   {social.charAt(0)}
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -39,9 +38,9 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {['High School (8-12)', 'Test Preparation', 'Skill Development', 'Demo Lectures', 'Mentorship'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors">
+                  <span className="text-gray-400 text-sm hover:text-white transition-colors cursor-pointer">
                     {item}
-                  </a>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -53,9 +52,9 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {['About Us', 'Our Faculty', 'Events', 'Gallery', 'Careers'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors">
+                  <span className="text-gray-400 text-sm hover:text-white transition-colors cursor-pointer">
                     {item}
-                  </a>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -83,12 +82,12 @@ const Footer: React.FC = () => {
             &copy; {new Date().getFullYear()} R Academy. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
+            <span className="text-gray-500 text-sm hover:text-white transition-colors cursor-pointer">
               Privacy Policy
-            </a>
-            <a href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
+            </span>
+            <span className="text-gray-500 text-sm hover:text-white transition-colors cursor-pointer">
               Terms of Service
-            </a>
+            </span>
             <p className="text-gray-500 text-sm">
               Created by Sunny Vishwakarma
             </p>
