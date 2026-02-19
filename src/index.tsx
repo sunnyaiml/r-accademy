@@ -6,11 +6,13 @@ import reportWebVitals from './reportWebVitals';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 async function prepareApp(): Promise<void> {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost') {
     const { worker } = await import('./mocks/browser');
+    console.log('MSW: Starting worker...');
     await worker.start({
       onUnhandledRequest: 'bypass',
     });
+    console.log('MSW: Worker started successfully.');
   }
   return Promise.resolve();
 }

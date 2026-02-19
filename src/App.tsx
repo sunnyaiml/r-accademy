@@ -18,17 +18,29 @@ import TestEngine from './components/Test/TestEngine';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4F46E5',
-      light: '#818CF8',
-      dark: '#3730A3',
+      main: '#2563EB',
+      light: '#60A5FA',
+      dark: '#1E40AF',
     },
     secondary: {
-      main: '#7C3AED',
-      light: '#A78BFA',
-      dark: '#5B21B6',
+      main: '#0D9488',
+      light: '#2DD4BF',
+      dark: '#0F766E',
+    },
+    info: {
+      main: '#0EA5E9',
+    },
+    success: {
+      main: '#10B981',
+    },
+    warning: {
+      main: '#F59E0B',
+    },
+    error: {
+      main: '#EF4444',
     },
     background: {
-      default: '#F8F9FC',
+      default: '#F0F4F8',
     },
   },
   typography: {

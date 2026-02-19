@@ -102,7 +102,7 @@ const PastEvents: React.FC = () => {
 
         {/* Accent CTA Card */}
         <div className="mt-4 rounded-2xl p-8 text-center"
-          style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)' }}
         >
           <h3 className="text-white font-bold text-xl mb-2">Stay Updated</h3>
           <p className="text-indigo-100 text-sm max-w-md mx-auto">

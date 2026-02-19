@@ -95,7 +95,7 @@ const WhyChooseUs: React.FC = () => {
             >
               <p
                 className="text-5xl font-extrabold mb-2 bg-clip-text text-transparent"
-                style={{ backgroundImage: 'linear-gradient(to right, #4F46E5, #7C3AED)' }}
+                style={{ backgroundImage: 'linear-gradient(to right, #2563EB, #0D9488)' }}
               >
                 {stat.value}
               </p>

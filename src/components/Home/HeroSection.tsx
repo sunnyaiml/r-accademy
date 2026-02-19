@@ -67,7 +67,7 @@ const HeroSection: React.FC = () => {
               <span
                 className="bg-clip-text text-transparent"
                 style={{
-                  backgroundImage: 'linear-gradient(to right, #4F46E5, #7C3AED)',
+                  backgroundImage: 'linear-gradient(to right, #2563EB, #0D9488)',
                 }}
               >
                 One Student

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Box, Paper, Typography, Chip, styled, LinearProgress, linearProgressClasses } from '@mui/material';
+import { Box, Paper, Typography, styled, LinearProgress, linearProgressClasses } from '@mui/material';
 import { motion } from 'framer-motion';
 
 // Animations
@@ -9,19 +9,20 @@ export const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.08
     }
   }
 };
 
 export const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
+  hidden: { y: 16, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
     transition: {
       type: "spring",
-      stiffness: 100
+      stiffness: 120,
+      damping: 14,
     }
   }
 };
@@ -29,27 +30,28 @@ export const itemVariants = {
 
 // Styled Components
 export const DashboardPaper = styled(Paper)(() => ({
-  padding: '24px',
-  borderRadius: 16,
-  boxShadow: '0 2px 10px -4px rgba(0,0,0,0.05)',
+  padding: '28px',
+  borderRadius: 20,
+  boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
   backgroundColor: '#fff',
   border: '1px solid rgba(0,0,0,0.05)',
-  transition: 'box-shadow 0.3s ease-in-out',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   '&:hover': {
-    boxShadow: '0 8px 30px -4px rgba(0,0,0,0.08)',
+    boxShadow: '0 8px 25px -5px rgba(0,0,0,0.06), 0 4px 10px -5px rgba(0,0,0,0.03)',
   },
 }));
 
 export const GradientCard = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'gradient',
 })<{ gradient: string }>(({ gradient }) => ({
-  padding: '24px',
-  borderRadius: 16,
+  padding: '28px',
+  borderRadius: 20,
   background: gradient,
   color: '#fff',
   position: 'relative',
   overflow: 'hidden',
-  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+  boxShadow: '0 8px 24px 0 rgba(37, 99, 235, 0.15)',
+  border: 'none',
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -57,7 +59,7 @@ export const GradientCard = styled(Paper, {
     left: 0,
     width: '100%',
     height: '100%',
-    background: 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)',
+    background: 'linear-gradient(45deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%)',
     zIndex: 1,
   },
 }));
@@ -76,8 +78,8 @@ export const StatBox: React.FC<StatBoxProps> = ({
   value,
   label,
   icon,
-  iconBg = 'bg-indigo-50',
-  iconColor = 'text-indigo-600',
+  iconBg = 'bg-blue-50',
+  iconColor = 'text-blue-600',
   extra,
   gradient,
 }) => (
@@ -85,30 +87,40 @@ export const StatBox: React.FC<StatBoxProps> = ({
   <motion.div variants={itemVariants} style={{ width: '100%' }}>
     {gradient ? (
       <GradientCard gradient={gradient}>
-        <Box sx={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-          {icon && <Box sx={{ mb: 1, opacity: 0.9 }}>{icon}</Box>}
-          <Typography variant="h3" fontWeight="bold" sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-            {value}
-          </Typography>
-          <Typography variant="subtitle1" sx={{ opacity: 0.9, fontWeight: 500, letterSpacing: 0.5 }}>
-            {label}
-          </Typography>
+        <Box sx={{ position: 'relative', zIndex: 2, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box>
+            <Typography variant="subtitle2" sx={{ opacity: 0.85, fontWeight: 600, letterSpacing: 0.5, mb: 0.5, textTransform: 'uppercase', fontSize: '0.7rem' }}>
+              {label}
+            </Typography>
+            <Typography variant="h3" fontWeight="800">
+              {value}
+            </Typography>
+          </Box>
+          {icon && (
+            <Box sx={{
+              p: 1.5,
+              bgcolor: 'rgba(255,255,255,0.15)',
+              borderRadius: '16px',
+              backdropFilter: 'blur(8px)',
+            }}>
+              {icon}
+            </Box>
+          )}
         </Box>
       </GradientCard>
     ) : (
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] transition-all duration-300 group">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
-            <h3 className="text-3xl font-bold text-gray-900">{value}</h3>
+      <div className="bg-white p-5 rounded-2xl border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
+        <div className="absolute -top-6 -right-6 w-20 h-20 bg-gray-50 rounded-full group-hover:bg-blue-50 transition-colors duration-500 opacity-60" />
+        <div className="flex justify-between items-start mb-3 relative z-10">
+          <div className={`h-11 w-11 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
+            {icon}
           </div>
-          {icon && (
-            <div className={`h-12 w-12 rounded-full ${iconBg} ${iconColor} flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300`}>
-              {icon}
-            </div>
-          )}
         </div>
-        {extra}
+        <div className="relative z-10">
+          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">{label}</p>
+          <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+          {extra}
+        </div>
       </div>
     )}
   </motion.div>
@@ -117,40 +129,54 @@ export const StatBox: React.FC<StatBoxProps> = ({
 
 export const SectionTitle = styled(Typography)(() => ({
   fontWeight: 700,
-  marginBottom: '16px',
-  color: '#111827',
-  fontSize: '1.25rem',
+  marginBottom: '20px',
+  color: '#1E293B',
+  fontSize: '1.1rem',
+  letterSpacing: '-0.01em',
+  display: 'flex',
+  alignItems: 'center',
+  '&::before': {
+    content: '""',
+    width: 3,
+    height: 20,
+    backgroundColor: 'var(--primary-main)',
+    borderRadius: 4,
+    marginRight: 10,
+  }
 }));
 
 // Status chip helper
 export const StatusChip: React.FC<{ status: string }> = ({ status }) => {
-  const colorMap: Record<string, 'success' | 'warning' | 'error' | 'info' | 'default'> = {
-    completed: 'success',
-    submitted: 'success',
-    active: 'info',
-    present: 'success',
-    pending: 'warning',
-    upcoming: 'info',
-    overdue: 'error',
-    absent: 'error',
-    late: 'warning',
-    missed: 'error',
-    graded: 'success',
-    draft: 'default',
+  const colorMap: Record<string, string> = {
+    completed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    submitted: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    active: 'bg-blue-50 text-blue-700 border-blue-200',
+    present: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    pending: 'bg-amber-50 text-amber-700 border-amber-200',
+    upcoming: 'bg-sky-50 text-sky-700 border-sky-200',
+    overdue: 'bg-rose-50 text-rose-700 border-rose-200',
+    absent: 'bg-rose-50 text-rose-700 border-rose-200',
+    late: 'bg-amber-50 text-amber-700 border-amber-200',
+    missed: 'bg-rose-50 text-rose-700 border-rose-200',
+    graded: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    draft: 'bg-gray-50 text-gray-600 border-gray-200',
+    inactive: 'bg-gray-50 text-gray-500 border-gray-200',
+    promoted: 'bg-teal-50 text-teal-700 border-teal-200',
+    detained: 'bg-rose-50 text-rose-700 border-rose-200',
   };
+
+  const cls = colorMap[status.toLowerCase()] || 'bg-gray-50 text-gray-600 border-gray-200';
+
   return (
-    <Chip
-      label={status.charAt(0).toUpperCase() + status.slice(1)}
-      size="small"
-      color={colorMap[status.toLowerCase()] || 'default'}
-      sx={{ borderRadius: '8px', fontWeight: 600, fontSize: '0.7rem' }}
-    />
+    <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider border ${cls}`}>
+      {status}
+    </span>
   );
 };
 
 // Progress bar with label
-export const ProgressWithLabel: React.FC<{ value: number; color?: string }> = ({ value, color = '#4F46E5' }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+export const ProgressWithLabel: React.FC<{ value: number; color?: string }> = ({ value, color = 'var(--primary-main)' }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
     <Box sx={{ flex: 1 }}>
       <LinearProgress
         variant="determinate"
@@ -163,12 +189,12 @@ export const ProgressWithLabel: React.FC<{ value: number; color?: string }> = ({
             background: color,
           },
           [`&.${linearProgressClasses.colorPrimary}`]: {
-            backgroundColor: 'rgba(0,0,0,0.06)',
+            backgroundColor: 'rgba(0,0,0,0.04)',
           },
         }}
       />
     </Box>
-    <Typography variant="caption" fontWeight="bold" color="text.secondary">
+    <Typography variant="caption" fontWeight="700" color="text.primary" sx={{ fontSize: '0.7rem', minWidth: 32 }}>
       {value}%
     </Typography>
   </Box>

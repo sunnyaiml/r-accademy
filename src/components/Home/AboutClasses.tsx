@@ -53,7 +53,7 @@ const AboutClasses: React.FC = () => {
               </p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-6">
                 Designed to help every student{' '}
-                <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to right, #4F46E5, #7C3AED)' }}>
+                <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to right, #2563EB, #0D9488)' }}>
                   excel
                 </span>
               </h2>

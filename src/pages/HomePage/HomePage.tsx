@@ -39,7 +39,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+      <motion.div id="hero" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <HeroSection />
       </motion.div>
 
@@ -47,15 +47,15 @@ const HomePage: React.FC = () => {
         <IntroVideo />
       </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+      <motion.div id="about" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <AboutClasses />
       </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+      <motion.div id="classes" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <TeacherPosts isTeacher={false} />
       </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+      <motion.div id="testimonials" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <ParentReviews />
       </motion.div>
 
@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
         <PastEvents />
       </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+      <motion.div id="lectures" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <DemoLectures />
       </motion.div>
 
@@ -75,28 +75,28 @@ const HomePage: React.FC = () => {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className="rounded-3xl px-8 py-16 md:py-20 text-center relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4F46E5 100%)' }}
+            className="rounded-3xl px-8 py-16 md:py-20 text-center relative overflow-hidden shadow-2xl shadow-primary-200"
+            style={{ background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, var(--primary-main) 100%)' }}
           >
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
 
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6">
                 Ready to Start Your Journey?
               </h2>
-              <p className="text-indigo-200 text-lg max-w-xl mx-auto mb-8">
-                Join hundreds of students who are already excelling in their academics with R Academy.
+              <p className="text-indigo-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+                Join hundreds of students who are already excelling in their academics with R Academy. Experience personalized learning today.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-5 justify-center">
                 <button
                   onClick={() => navigate('/student/login')}
-                  className="bg-white text-indigo-600 font-semibold px-8 py-3.5 rounded-full hover:bg-indigo-50 transition-colors shadow-lg"
+                  className="bg-white text-primary-600 font-bold px-10 py-4 rounded-2xl hover:bg-primary-50 transition-all shadow-xl hover:-translate-y-1 active:scale-95"
                 >
                   Get Started Today
                 </button>
-                <button className="border-2 border-white/30 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 transition-colors">
+                <button className="border-2 border-white/20 text-white font-bold px-10 py-4 rounded-2xl hover:bg-white/10 transition-all hover:-translate-y-1 active:scale-95 backdrop-blur-sm">
                   Schedule a Visit
                 </button>
               </div>
