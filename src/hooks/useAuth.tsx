@@ -1,12 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { initializeSocket, disconnectSocket } from '../utils/socket';
 
 interface User {
   id: string;
   name: string;
   email: string;
   phone: string;
-  role: 'student' | 'teacher';
+  role: 'student' | 'teacher' | 'parent' | 'admin';
+  grade?: string;
+  studentId?: string;
+  specialization?: string;
 }
 
 interface AuthContextType {
@@ -21,11 +25,14 @@ interface AuthContextType {
     email: string;
     phone: string;
     password: string;
+    role?: string;
+    studentId?: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
   sendOtp: (contact: string) => Promise<void>;
   verifyOtp: (otp: string) => Promise<void>;
   clearMessages: () => void;
+  tempUserData: any;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -84,7 +91,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       setSuccessMessage('Login successful');
-      navigate('/dashboard');
+
+      // Initialize Socket.io connection
+      initializeSocket(data.token);
+
+      const roleRoutes: Record<string, string> = {
+        student: '/student/dashboard',
+        teacher: '/teacher/dashboard',
+        parent: '/parent/dashboard',
+        admin: '/admin/dashboard',
+      };
+      navigate(roleRoutes[data.user.role] || '/');
     } catch (error: any) {
       handleError(error);
     } finally {
@@ -174,7 +191,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSuccessMessage('Account verified successfully');
       setTempUserData(null);
       setOtpSent(false);
-      navigate('/dashboard');
+
+      // Initialize Socket.io connection
+      initializeSocket(data.token);
+
+      const roleRoutes: Record<string, string> = {
+        student: '/student/dashboard',
+        teacher: '/teacher/dashboard',
+        parent: '/parent/dashboard',
+        admin: '/admin/dashboard',
+      };
+      navigate(roleRoutes[data.user.role] || '/');
     } catch (error: any) {
       handleError(error);
     } finally {
@@ -186,6 +213,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       clearMessages();
+
+      // Disconnect Socket.io
+      disconnectSocket();
 
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -212,6 +242,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         sendOtp,
         verifyOtp,
         clearMessages,
+        tempUserData,
       }}
     >
       {children}

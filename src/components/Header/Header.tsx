@@ -1,24 +1,6 @@
-import React, { useState } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  useMediaQuery,
-  useTheme,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Avatar,
-  Divider,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import PersonIcon from '@mui/icons-material/Person';
+import React, { useState, useEffect } from 'react';
+import { Menu, MenuItem, Divider } from '@mui/material';
+import { GraduationCap, Menu as MenuIcon, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -27,8 +9,15 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -40,6 +29,7 @@ const Header: React.FC = () => {
 
   const handleLoginClick = () => {
     handleClose();
+    setMobileMenuOpen(false);
     navigate('/student/login');
   };
 
@@ -51,131 +41,171 @@ const Header: React.FC = () => {
 
   const handleDashboardClick = () => {
     handleClose();
-    navigate(user?.role === 'student' ? '/student/dashboard' : '/teacher/dashboard');
+    if (user?.role === 'student') navigate('/student/dashboard');
+    else if (user?.role === 'teacher') navigate('/teacher/dashboard');
+    else if (user?.role === 'parent') navigate('/parent/dashboard');
+    else if (user?.role === 'admin') navigate('/admin/dashboard');
   };
 
   const navItems = ['Home', 'About Us', 'Classes', 'Schedule', 'Testimonials', 'Contact Us'];
 
-  const renderMobileMenu = (
-    <Drawer anchor="right" open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
-      <Box sx={{ width: 250 }}>
-        <List>
-          {navItems.map((item) => (
-            <ListItem button key={item} onClick={() => setMobileMenuOpen(false)}>
-              <ListItemText primary={item} />
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    </Drawer>
-  );
+  const userInitial = user?.name?.charAt(0)?.toUpperCase() || 'U';
 
   return (
     <>
-      <AppBar position="fixed" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              flexGrow: 1,
-              color: 'primary.main',
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-            }}
-            onClick={() => navigate('/')}
-          >
-            R Education
-          </Typography>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/80 backdrop-blur-md shadow-sm py-3'
+            : 'bg-transparent py-5'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => navigate('/')}
+            >
+              <div className="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center mr-3 shadow-lg shadow-indigo-200">
+                <GraduationCap className="text-white h-5 w-5" />
+              </div>
+              <span className={`text-xl font-bold tracking-tight ${scrolled ? 'text-gray-900' : 'text-gray-900'}`}>
+                R Academy
+              </span>
+            </div>
 
-          {!isMobile ? (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
-                <Button
+                <button
                   key={item}
-                  sx={{
-                    color: 'text.primary',
-                    mx: 1,
-                    '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    },
-                  }}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    scrolled
+                      ? 'text-gray-600 hover:text-indigo-600 hover:bg-indigo-50'
+                      : 'text-gray-700 hover:text-indigo-600 hover:bg-white/50'
+                  }`}
                 >
                   {item}
-                </Button>
+                </button>
               ))}
-              {user ? (
-                <IconButton
-                  onClick={handleProfileClick}
-                  sx={{ ml: 2 }}
-                  aria-controls="profile-menu"
-                  aria-haspopup="true"
-                >
-                  <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                    {user.name.charAt(0).toUpperCase()}
-                  </Avatar>
-                </IconButton>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleLoginClick}
-                  startIcon={<span role="img" aria-label="person">👤</span>}
-                >
-                  Login
-                </Button>
-              )}
-            </Box>
-          ) : (
-            <Box>
-              {user ? (
-                <IconButton onClick={handleProfileClick} sx={{ mr: 2 }}>
-                  <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                    {user.name.charAt(0).toUpperCase()}
-                  </Avatar>
-                </IconButton>
-              ) : (
-                <IconButton onClick={handleLoginClick} sx={{ mr: 2 }}>
-                  <PersonIcon />
-                </IconButton>
-              )}
-              <IconButton edge="end" onClick={() => setMobileMenuOpen(true)}>
-                <MenuIcon />
-              </IconButton>
-            </Box>
-          )}
+            </nav>
 
-          <Menu
-            id="profile-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
-            {user ? (
-              <>
-                <MenuItem onClick={handleDashboardClick}>
-                  Dashboard
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </>
-            ) : (
-              <MenuItem onClick={handleLoginClick}>Login</MenuItem>
-            )}
-          </Menu>
-        </Toolbar>
-      </AppBar>
-      <Toolbar /> {/* This is for spacing below the fixed AppBar */}
-      {renderMobileMenu}
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-3">
+              {user ? (
+                <>
+                  <button
+                    onClick={handleDashboardClick}
+                    className="text-sm font-medium text-gray-600 hover:text-indigo-600 px-3 py-2 transition-colors"
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={handleProfileClick}
+                    className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm hover:ring-2 hover:ring-indigo-200 transition-all"
+                  >
+                    {userInitial}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleLoginClick}
+                    className="text-sm font-medium text-gray-600 hover:text-indigo-600 px-3 py-2 transition-colors"
+                  >
+                    Log in
+                  </button>
+                  <button
+                    onClick={handleLoginClick}
+                    className="bg-gray-900 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-800 hover:-translate-y-0.5 transition-all shadow-sm"
+                  >
+                    Get Started
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Actions */}
+            <div className="md:hidden flex items-center gap-2">
+              {user && (
+                <button
+                  onClick={handleProfileClick}
+                  className="h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs"
+                >
+                  {userInitial}
+                </button>
+              )}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                {mobileMenuOpen ? (
+                  <X size={22} className="text-gray-600" />
+                ) : (
+                  <MenuIcon size={22} className="text-gray-600" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Dropdown Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 border-t border-gray-100 pt-4 space-y-1 animate-in fade-in">
+              {navItems.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                >
+                  {item}
+                </button>
+              ))}
+              <div className="pt-2 border-t border-gray-100 mt-2">
+                {user ? (
+                  <button
+                    onClick={handleDashboardClick}
+                    className="block w-full text-left px-4 py-3 text-sm font-semibold text-indigo-600"
+                  >
+                    Go to Dashboard
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleLoginClick}
+                    className="w-full bg-gray-900 text-white text-sm font-semibold px-5 py-3 rounded-full mt-2"
+                  >
+                    Get Started
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Spacer for fixed header */}
+      <div className="h-20" />
+
+      {/* Profile Menu (MUI for positioning) */}
+      <Menu
+        id="profile-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        PaperProps={{ sx: { borderRadius: 3, mt: 1, minWidth: 160 } }}
+      >
+        {user ? (
+          <>
+            <MenuItem onClick={handleDashboardClick} sx={{ fontSize: '0.875rem' }}>Dashboard</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout} sx={{ fontSize: '0.875rem', color: '#EF4444' }}>Logout</MenuItem>
+          </>
+        ) : (
+          <MenuItem onClick={handleLoginClick} sx={{ fontSize: '0.875rem' }}>Login</MenuItem>
+        )}
+      </Menu>
     </>
   );
 };

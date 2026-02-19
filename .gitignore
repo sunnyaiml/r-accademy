@@ -71,3 +71,7 @@ logs
 # Vercel
 .vercel
 .env*.local
+
+
+/ui_desgin_reference
+ui_desgin_reference/

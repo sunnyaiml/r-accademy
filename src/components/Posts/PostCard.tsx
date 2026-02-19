@@ -79,13 +79,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, isTeacher }) => {
 
   const handleComment = () => {
     if (newComment.trim()) {
-      const comment: Comment = {
-        id: String(post.comments.length + 1),
-        user: 'Current User',
-        avatar: '/avatars/default.jpg',
-        text: newComment,
-        timestamp: new Date().toISOString(),
-      };
+      // Add comment logic here
       // Add comment logic here
       setNewComment('');
     }
@@ -164,8 +158,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, isTeacher }) => {
         {showComments && (
           <Box sx={{ p: 2 }}>
             <Divider />
-            {post.comments.map((comment) => (
-              <Box key={comment.id} sx={{ mt: 2 }}>
+            {post.comments.map((comment, index) => (
+              <Box key={index} sx={{ mt: 2 }}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <Avatar src={comment.avatar} alt={comment.user} sx={{ width: 32, height: 32 }} />
                   <Typography variant="subtitle2">{comment.user}</Typography>

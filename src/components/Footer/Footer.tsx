@@ -1,170 +1,101 @@
 import React from 'react';
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Link,
-  IconButton,
-  TextField,
-  Button,
-  Divider,
-} from '@mui/material';
-import {
-  Facebook,
-  Instagram,
-  YouTube,
-  GitHub,
-  Email,
-  Phone,
-  LocationOn,
-} from '@mui/icons-material';
+import { GraduationCap } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <Box
-      sx={{
-        bgcolor: 'primary.main',
-        color: 'white',
-        py: 6,
-        mt: 8,
-      }}
-    >
-      <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          {/* Quick Links */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-              🔗 Quick Links
-            </Typography>
-            <Link href="/" color="inherit" display="block" sx={{ mb: 1 }}>
-              Home
-            </Link>
-            <Link href="/about" color="inherit" display="block" sx={{ mb: 1 }}>
-              About Us
-            </Link>
-            <Link href="/classes" color="inherit" display="block" sx={{ mb: 1 }}>
-              Classes
-            </Link>
-            <Link href="/schedule" color="inherit" display="block" sx={{ mb: 1 }}>
-              Schedule
-            </Link>
-            <Link href="/contact" color="inherit" display="block">
-              Contact
-            </Link>
-          </Grid>
+    <footer className="bg-gray-900 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-16">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center mb-5">
+              <div className="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                <GraduationCap className="text-white h-5 w-5" />
+              </div>
+              <span className="text-xl font-bold tracking-tight">R Academy</span>
+            </div>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              Empowering students with quality education, personalized learning paths, and expert guidance for academic excellence.
+            </p>
+            {/* Social Icons */}
+            <div className="flex gap-3">
+              {['Instagram', 'Twitter', 'LinkedIn', 'YouTube'].map((social) => (
+                <a
+                  key={social}
+                  href="#"
+                  className="h-9 w-9 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-indigo-600 transition-all text-xs font-bold"
+                  aria-label={social}
+                >
+                  {social.charAt(0)}
+                </a>
+              ))}
+            </div>
+          </div>
 
-          {/* Contact Information */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-              📞 Contact Us
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Email sx={{ mr: 1 }} />
-              <Typography>Sunny.work70@gmail.com</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Phone sx={{ mr: 1 }} />
-              <Typography>+91 98765 43210</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-              <LocationOn sx={{ mr: 1, mt: 0.5 }} />
-              <Typography>
-                Room no. 36, Utkal Sadan,
-                <br />
-                Opp. to RK Jewellers,
-                <br />
-                Ganesh Chowk, Bhatwadi,
-                <br />
-                Kisan Nagar No.3, Wagle Estate,
-                <br />
+          {/* Programs */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-wider mb-5">Programs</h4>
+            <ul className="space-y-3">
+              {['High School (8-12)', 'Test Preparation', 'Skill Development', 'Demo Lectures', 'Mentorship'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Campus */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-wider mb-5">Campus</h4>
+            <ul className="space-y-3">
+              {['About Us', 'Our Faculty', 'Events', 'Gallery', 'Careers'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-wider mb-5">Contact</h4>
+            <ul className="space-y-3 text-gray-400 text-sm">
+              <li>Sunny.work70@gmail.com</li>
+              <li>+91 98765 43210</li>
+              <li className="leading-relaxed">
+                Room no. 36, Utkal Sadan,<br />
+                Opp. to RK Jewellers,<br />
+                Ganesh Chowk, Bhatwadi,<br />
                 Thane - 400604
-              </Typography>
-            </Box>
-          </Grid>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-          {/* Newsletter Signup */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-              📫 Newsletter
-            </Typography>
-            <Typography paragraph>Stay Updated! Subscribe for Offers and Updates</Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Enter your email"
-              sx={{
-                mb: 2,
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                '& .MuiOutlinedInput-root': {
-                  color: 'white',
-                  '& fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.3)',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'rgba(255, 255, 255, 0.5)',
-                  },
-                },
-              }}
-            />
-            <Button variant="contained" color="secondary" fullWidth>
-              Subscribe
-            </Button>
-          </Grid>
-
-          {/* Social Links */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-              🌐 Connect With Us
-            </Typography>
-            <Box>
-              <IconButton color="inherit" aria-label="Facebook">
-                <Facebook />
-              </IconButton>
-              <IconButton color="inherit" aria-label="Instagram">
-                <Instagram />
-              </IconButton>
-              <IconButton color="inherit" aria-label="YouTube">
-                <YouTube />
-              </IconButton>
-              <IconButton color="inherit" aria-label="GitHub">
-                <GitHub />
-              </IconButton>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" sx={{ opacity: 0.7 }}>
-                🏆 Best Local Tuition Center, 2023
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.7 }}>
-                📚 5+ Years of Teaching Excellence
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.7 }}>
-                🎓 500+ Students Enrolled
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-
-        <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-
-        {/* Creator Info */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="body2" sx={{ opacity: 0.7 }}>
-            Created with ❤️ by Sunny Vishwakarma
-          </Typography>
-          <Link
-            href="https://github.com/sunnyaiml"
-            color="inherit"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ display: 'inline-flex', alignItems: 'center', mt: 1 }}
-          >
-            <GitHub sx={{ mr: 0.5 }} />
-            GitHub Repository
-          </Link>
-        </Box>
-      </Container>
-    </Box>
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} R Academy. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
+              Terms of Service
+            </a>
+            <p className="text-gray-500 text-sm">
+              Created by Sunny Vishwakarma
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 };
 

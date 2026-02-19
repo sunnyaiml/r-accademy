@@ -1,0 +1,14 @@
+src/App.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/Auth/OtpVerification.tsx(3,3): error TS6133: 'Box' is declared but its value is never read.
+src/components/Auth/OtpVerification.tsx(14,22): error TS2339: Property 'isLoading' does not exist on type 'AuthContextType'.
+src/components/Auth/OtpVerification.tsx(14,40): error TS2339: Property 'phoneNumber' does not exist on type 'AuthContextType'.
+src/components/Dashboard/StudentDashboard.tsx(24,3): error TS6133: 'Assignment' is declared but its value is never read.
+src/components/Dashboard/StudentDashboard.tsx(25,3): error TS6133: 'Event' is declared but its value is never read.
+src/components/Dashboard/StudentDashboard.tsx(28,3): error TS6133: 'Person' is declared but its value is never read.
+src/components/Dashboard/StudentDashboard.tsx(110,30): error TS2339: Property 'grade' does not exist on type 'User'.
+src/components/ErrorBoundary/ErrorBoundary.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/Home/WhyChooseUs.tsx(47,9): error TS6133: 'theme' is declared but its value is never read.
+src/components/Posts/PostCard.tsx(82,13): error TS6133: 'comment' is declared but its value is never read.
+src/pages/Auth/StudentAuth.tsx(53,28): error TS6133: 'event' is declared but its value is never read.
+src/pages/Auth/TeacherAuth.tsx(54,28): error TS6133: 'event' is declared but its value is never read.
+src/pages/HomePage/HomePage.tsx(93,10): error TS2741: Property 'isTeacher' is missing in type '{}' but required in type 'TeacherPostsProps'.

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Box,
   TextField,
   Button,
   Typography,
@@ -11,7 +10,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 const OtpVerification: React.FC = () => {
   const [otp, setOtp] = useState('');
-  const { verifyOtp, isLoading, error, phoneNumber } = useAuth();
+  const { verifyOtp, loading, error, tempUserData } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +23,7 @@ const OtpVerification: React.FC = () => {
         Verify OTP
       </Typography>
       <Typography variant="body2" align="center" sx={{ mb: 3 }}>
-        Enter the OTP sent to {phoneNumber}
+        Enter the OTP sent to {tempUserData?.phone}
       </Typography>
       {error && (
         <Typography color="error" align="center" sx={{ mb: 2 }}>
@@ -47,10 +46,10 @@ const OtpVerification: React.FC = () => {
           variant="contained"
           color="primary"
           size="large"
-          disabled={isLoading}
+          disabled={loading}
           sx={{ mt: 3 }}
         >
-          {isLoading ? <CircularProgress size={24} /> : 'Verify OTP'}
+          {loading ? <CircularProgress size={24} /> : 'Verify OTP'}
         </Button>
       </form>
     </Paper>
