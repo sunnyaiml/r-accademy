@@ -107,12 +107,37 @@ const Header: React.FC = () => {
 
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-3">
-              <button
-                onClick={() => navigate('/contact')}
-                className="bg-primary-600 text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-700 hover:-translate-y-0.5 transition-all shadow-md active:scale-95"
-              >
-                Enroll Now
-              </button>
+              {user ? (
+                <>
+                  <button
+                    onClick={handleDashboardClick}
+                    className="text-sm font-semibold text-slate-600 hover:text-primary-600 px-4 py-2.5 rounded-full hover:bg-primary-50/80 transition-all"
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={handleProfileClick}
+                    className="h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-sm hover:bg-primary-700 transition-all hover:scale-105 shadow-md"
+                  >
+                    {userInitial}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/student/login')}
+                    className="text-sm font-semibold text-slate-600 hover:text-primary-600 px-4 py-2.5 rounded-full hover:bg-primary-50/80 transition-all"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => navigate('/contact')}
+                    className="bg-primary-600 text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-700 hover:-translate-y-0.5 transition-all shadow-md active:scale-95"
+                  >
+                    Enroll Now
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Mobile Actions */}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
+
+// Phase 1 - Informational Pages
 import AboutUs from './pages/AboutUs/AboutUs';
 import Faculties from './pages/Faculties/Faculties';
 import Students from './pages/Students/Students';
@@ -10,9 +12,24 @@ import ParentMeeting from './pages/ParentMeeting/ParentMeeting';
 import Activities from './pages/Activities/Activities';
 import Contact from './pages/Contact/Contact';
 import HomePage from './pages/HomePage/HomePage';
+
+// Layout
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+
+// Phase 2 - Auth
 import { AuthProvider } from './hooks/useAuth';
+import StudentAuth from './pages/Auth/StudentAuth';
+import TeacherAuth from './pages/Auth/TeacherAuth';
+import ParentAuth from './pages/Auth/ParentAuth';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
+
+// Phase 2 - Dashboards
+import StudentDashboard from './components/Dashboard/StudentDashboard';
+import TeacherDashboard from './components/Dashboard/TeacherDashboard';
+import ParentDashboard from './components/Dashboard/ParentDashboard';
+import SuperAdminDashboard from './components/Dashboard/SuperAdminDashboard';
+import TestEngine from './components/Test/TestEngine';
 
 const theme = createTheme({
   // ... (previous theme code remains same)
@@ -45,14 +62,15 @@ const App: React.FC = () => {
             <Route path="/test-schedule" element={<PublicLayout><TestSchedule /></PublicLayout>} />
             <Route path="/parents-meeting" element={<PublicLayout><ParentMeeting /></PublicLayout>} />
             <Route path="/activities" element={<PublicLayout><Activities /></PublicLayout>} />
-            <Route path="/testimonials" element={<PublicLayout><HomePage /></PublicLayout>} /> {/* Redirect to testimonials section on home */}
+            <Route path="/testimonials" element={<PublicLayout><HomePage /></PublicLayout>} />
             <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
 
-            {/* Phase 2 - Hidden Features (Commented out) */}
-            {/* 
+            {/* Phase 2 - Auth Pages */}
             <Route path="/student/login" element={<PublicLayout><StudentAuth /></PublicLayout>} />
             <Route path="/teacher/login" element={<PublicLayout><TeacherAuth /></PublicLayout>} />
             <Route path="/parent/login" element={<PublicLayout><ParentAuth /></PublicLayout>} />
+
+            {/* Phase 2 - Protected Dashboards */}
             <Route
               path="/student/dashboard"
               element={
@@ -93,7 +111,6 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            */}
 
             {/* Fallback */}
             <Route path="*" element={<PublicLayout><HomePage /></PublicLayout>} />
