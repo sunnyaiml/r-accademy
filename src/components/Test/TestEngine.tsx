@@ -76,6 +76,7 @@ const TestEngine: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRemaining]);
 
   // Prevent navigation away during test
@@ -201,8 +202,8 @@ const TestEngine: React.FC = () => {
                       index === currentQuestionIndex
                         ? 'primary'
                         : answers[q.id] !== undefined
-                        ? 'success'
-                        : 'default'
+                          ? 'success'
+                          : 'default'
                     }
                     variant={index === currentQuestionIndex ? 'filled' : 'outlined'}
                     sx={{ cursor: 'pointer', width: 40, height: 40 }}
