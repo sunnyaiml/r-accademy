@@ -78,9 +78,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle, imag
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8 }}
                     >
-                      <Typography variant="h3" fontWeight="bold" gutterBottom>
-                        R-Academy
-                      </Typography>
+                      <h2 className="text-3xl font-extrabold text-white mb-6">Welcome to R-education</h2>
                       <Typography variant="h6" sx={{ opacity: 0.9 }}>
                         Empowering Education, <br />
                         One Student at a Time.

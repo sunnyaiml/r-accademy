@@ -226,7 +226,7 @@ const TeacherDashboard: React.FC = () => {
         queryClient.invalidateQueries('teacherMeetings');
         setSuccessMessage(`Meeting started! ${response.data.notificationsSent} participants notified.`);
         const jitsiDomain = process.env.REACT_APP_JITSI_DOMAIN || 'meet.jit.si';
-        const roomName = `r-academy-${meetingId}`;
+        const roomName = `r-education-${meetingId}`;
         window.open(`https://${jitsiDomain}/${roomName}`, '_blank');
       },
       onError: (error: any) => {

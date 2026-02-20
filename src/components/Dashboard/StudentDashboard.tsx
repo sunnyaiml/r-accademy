@@ -186,7 +186,7 @@ const StudentDashboard: React.FC = () => {
 
   const handleJoinMeeting = (meeting: MeetingItem) => {
     const jitsiDomain = process.env.REACT_APP_JITSI_DOMAIN || 'meet.jit.si';
-    const roomName = `r-academy-${meeting.id}`;
+    const roomName = `r-education-${meeting.id}`;
     window.open(`https://${jitsiDomain}/${roomName}`, '_blank');
   };
 
@@ -443,9 +443,8 @@ const StudentDashboard: React.FC = () => {
               {assignments.slice(0, 4).map((a) => (
                 <div key={a.id} className="flex items-center justify-between p-3.5 rounded-xl border border-gray-100 mb-2 last:mb-0 hover:border-teal-200 hover:bg-teal-50/30 transition-all">
                   <div className="flex items-center gap-3">
-                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${
-                      a.status === 'pending' || a.status === 'overdue' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
-                    }`}>
+                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${a.status === 'pending' || a.status === 'overdue' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                      }`}>
                       <Calendar size={18} />
                     </div>
                     <div>

@@ -1,0 +1,596 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ─────────────────────────────────────────────────────────
+
+enum Role {
+  student
+  teacher
+  parent
+  admin
+}
+
+enum AttendanceStatus {
+  present
+  absent
+  late
+}
+
+enum TestType {
+  quiz
+  unit_test
+  mid_term
+  final
+  practice
+}
+
+enum TestStatus {
+  draft
+  active
+  completed
+  graded
+}
+
+enum QuestionType {
+  mcq
+  short
+  long
+}
+
+enum AssignmentStatus {
+  draft
+  active
+  graded
+}
+
+enum SubmissionStatus {
+  pending
+  submitted
+  overdue
+  graded
+}
+
+enum MeetingType {
+  live_class
+  doubt_session
+  ptm
+  group_discussion
+}
+
+enum MeetingStatus {
+  scheduled
+  active
+  completed
+}
+
+enum NotificationType {
+  result
+  announcement
+  reminder
+  assignment
+}
+
+enum EventType {
+  test
+  assignment
+  cultural_event
+  trip
+  meeting
+}
+
+enum FeeStatus {
+  paid
+  pending
+}
+
+enum AnnouncementTarget {
+  all
+  teachers
+  students
+  parents
+}
+
+enum AnnouncementType {
+  school
+  class_level
+  teacher
+}
+
+enum AuditLogType {
+  teacher
+  student
+  class_action
+  system
+  announcement
+}
+
+enum HomeworkStatus {
+  done
+  partial
+  not_done
+}
+
+enum PermissionStatus {
+  pending
+  approved
+  declined
+}
+
+enum StudentStatus {
+  active
+  promoted
+  detained
+}
+
+enum TeacherStatus {
+  active
+  inactive
+}
+
+// ─── USER ──────────────────────────────────────────────────────────
+
+model User {
+  id             Int      @id @default(autoincrement())
+  name           String
+  email          String   @unique
+  phone          String
+  password       String
+  role           Role
+  isVerified     Boolean  @default(false)
+  profilePicture String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  studentProfile StudentProfile?
+  teacherProfile TeacherProfile?
+  parentProfile  ParentProfile?
+
+  notifications     Notification[]
+  sentMessages      Message[]          @relation("SentMessages")
+  chatGroupMembers  ChatGroupMember[]
+  markedAttendances Attendance[]       @relation("MarkedBy")
+  auditLogs         AuditLog[]
+  createdEvents     Event[]            @relation("CreatedBy")
+  sentAnnouncements Announcement[]     @relation("SentBy")
+
+  @@index([email])
+  @@index([role])
+}
+
+model StudentProfile {
+  id        Int           @id @default(autoincrement())
+  userId    Int           @unique
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId String        @unique // Human-readable: "STU12345"
+  grade     String
+  section   String        @default("A")
+  rollNumber String?
+  gpa       Float?
+  status    StudentStatus @default(active)
+
+  classId Int?
+  class   Class? @relation(fields: [classId], references: [id])
+
+  attendances           Attendance[]
+  testSubmissions       TestSubmission[]
+  assignmentSubmissions AssignmentSubmission[]
+  dailyProgressReports  DailyProgress[]
+  fees                  Fee[]
+  parents               ParentStudent[]
+
+  @@index([grade, section])
+  @@index([studentId])
+}
+
+model TeacherProfile {
+  id             Int           @id @default(autoincrement())
+  userId         Int           @unique
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization String?
+  status         TeacherStatus @default(active)
+  joinDate       DateTime      @default(now())
+
+  classTeacherOf       Class[]         @relation("ClassTeacher")
+  subjectsTaught       SubjectTeacher[]
+  meetings             Meeting[]
+  dailyProgressReports DailyProgress[] @relation("ReportedBy")
+}
+
+model ParentProfile {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  children ParentStudent[]
+}
+
+model ParentStudent {
+  id               Int            @id @default(autoincrement())
+  parentProfileId  Int
+  parentProfile    ParentProfile  @relation(fields: [parentProfileId], references: [id], onDelete: Cascade)
+  studentProfileId Int
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([parentProfileId, studentProfileId])
+}
+
+// ─── OTP ───────────────────────────────────────────────────────────
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  contact   String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([contact, code])
+}
+
+// ─── CLASS ─────────────────────────────────────────────────────────
+
+model Class {
+  id       Int    @id @default(autoincrement())
+  grade    String
+  section  String
+  capacity Int    @default(30)
+
+  classTeacherId Int?
+  classTeacher   TeacherProfile? @relation("ClassTeacher", fields: [classTeacherId], references: [id])
+
+  students             StudentProfile[]
+  subjects             SubjectClass[]
+  attendances          Attendance[]
+  timetableSlots       TimetableSlot[]
+  dailyProgressReports DailyProgress[]
+
+  @@unique([grade, section])
+  @@index([grade])
+}
+
+// ─── SUBJECT ───────────────────────────────────────────────────────
+
+model Subject {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  teachers       SubjectTeacher[]
+  classes        SubjectClass[]
+  tests          Test[]
+  assignments    Assignment[]
+  timetableSlots TimetableSlot[]
+}
+
+model SubjectTeacher {
+  id               Int            @id @default(autoincrement())
+  subjectId        Int
+  subject          Subject        @relation(fields: [subjectId], references: [id])
+  teacherProfileId Int
+  teacherProfile   TeacherProfile @relation(fields: [teacherProfileId], references: [id])
+
+  @@unique([subjectId, teacherProfileId])
+}
+
+model SubjectClass {
+  id        Int     @id @default(autoincrement())
+  subjectId Int
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  classId   Int
+  class     Class   @relation(fields: [classId], references: [id])
+
+  @@unique([subjectId, classId])
+}
+
+// ─── ATTENDANCE ────────────────────────────────────────────────────
+
+model Attendance {
+  id               Int              @id @default(autoincrement())
+  studentProfileId Int
+  studentProfile   StudentProfile   @relation(fields: [studentProfileId], references: [id])
+  classId          Int
+  class            Class            @relation(fields: [classId], references: [id])
+  date             DateTime         @db.Date
+  status           AttendanceStatus
+  markedById       Int
+  markedBy         User             @relation("MarkedBy", fields: [markedById], references: [id])
+  createdAt        DateTime         @default(now())
+
+  @@unique([studentProfileId, classId, date])
+  @@index([classId, date])
+  @@index([studentProfileId])
+}
+
+// ─── TEST ──────────────────────────────────────────────────────────
+
+model Test {
+  id         Int        @id @default(autoincrement())
+  title      String
+  subjectId  Int
+  subject    Subject    @relation(fields: [subjectId], references: [id])
+  grade      String
+  date       DateTime   @db.Date
+  duration   Int        // minutes
+  totalMarks Int
+  type       TestType
+  status     TestStatus @default(draft)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  questions   Question[]
+  submissions TestSubmission[]
+}
+
+model Question {
+  id            Int          @id @default(autoincrement())
+  testId        Int
+  test          Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  text          String
+  type          QuestionType
+  options       String[]     // For MCQ
+  marks         Int
+  correctAnswer String?
+
+  answers TestAnswer[]
+
+  @@index([testId])
+}
+
+model TestSubmission {
+  id               Int            @id @default(autoincrement())
+  testId           Int
+  test             Test           @relation(fields: [testId], references: [id])
+  studentProfileId Int
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id])
+  score            Float?
+  percentage       Float?
+  grade            String?
+  feedback         String?
+  submittedAt      DateTime       @default(now())
+
+  answers TestAnswer[]
+
+  @@unique([testId, studentProfileId])
+}
+
+model TestAnswer {
+  id               Int            @id @default(autoincrement())
+  testSubmissionId Int
+  testSubmission   TestSubmission @relation(fields: [testSubmissionId], references: [id], onDelete: Cascade)
+  questionId       Int
+  question         Question       @relation(fields: [questionId], references: [id])
+  answer           String
+  isCorrect        Boolean?
+
+  @@unique([testSubmissionId, questionId])
+}
+
+// ─── ASSIGNMENT ────────────────────────────────────────────────────
+
+model Assignment {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String?
+  subjectId   Int
+  subject     Subject          @relation(fields: [subjectId], references: [id])
+  grade       String
+  deadline    DateTime
+  status      AssignmentStatus @default(active)
+  totalMarks  Int?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  submissions AssignmentSubmission[]
+}
+
+model AssignmentSubmission {
+  id               Int            @id @default(autoincrement())
+  assignmentId     Int
+  assignment       Assignment     @relation(fields: [assignmentId], references: [id])
+  studentProfileId Int
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id])
+  fileName         String
+  fileUrl          String
+  notes            String?
+  marks            Float?
+  feedback         String?
+  submittedAt      DateTime       @default(now())
+
+  @@unique([assignmentId, studentProfileId])
+}
+
+// ─── MEETING ───────────────────────────────────────────────────────
+
+model Meeting {
+  id               Int           @id @default(autoincrement())
+  title            String
+  type             MeetingType
+  date             DateTime      @db.Date
+  time             String        // "14:30" format
+  duration         Int           // minutes
+  grade            String
+  participants     String[]      // ["students", "parents"]
+  status           MeetingStatus @default(scheduled)
+  meetingUrl       String?
+  teacherProfileId Int
+  teacherProfile   TeacherProfile @relation(fields: [teacherProfileId], references: [id])
+  subject          String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+// ─── NOTIFICATION ──────────────────────────────────────────────────
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  type      NotificationType
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId, read])
+}
+
+// ─── CHAT ──────────────────────────────────────────────────────────
+
+model ChatGroup {
+  id        Int               @id @default(autoincrement())
+  name      String
+  createdAt DateTime          @default(now())
+
+  members  ChatGroupMember[]
+  messages Message[]
+}
+
+model ChatGroupMember {
+  id          Int       @id @default(autoincrement())
+  chatGroupId Int
+  chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt    DateTime  @default(now())
+
+  @@unique([chatGroupId, userId])
+}
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  chatGroupId Int
+  chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id], onDelete: Cascade)
+  senderId    Int
+  sender      User      @relation("SentMessages", fields: [senderId], references: [id])
+  content     String
+  createdAt   DateTime  @default(now())
+
+  @@index([chatGroupId, createdAt])
+}
+
+// ─── TIMETABLE ─────────────────────────────────────────────────────
+
+model TimetableSlot {
+  id          Int     @id @default(autoincrement())
+  classId     Int
+  class       Class   @relation(fields: [classId], references: [id])
+  dayOfWeek   Int     // 0=Sunday ... 6=Saturday
+  startTime   String  // "09:00"
+  endTime     String  // "10:00"
+  subjectId   Int
+  subject     Subject @relation(fields: [subjectId], references: [id])
+  teacherName String  // Denormalized for display
+  room        String
+
+  @@index([classId, dayOfWeek])
+}
+
+// ─── EVENT ─────────────────────────────────────────────────────────
+
+model Event {
+  id                 Int       @id @default(autoincrement())
+  title              String
+  date               DateTime  @db.Date
+  type               EventType
+  grade              String
+  description        String?
+  requiresPermission Boolean   @default(false)
+  createdById        Int
+  createdBy          User      @relation("CreatedBy", fields: [createdById], references: [id])
+  createdAt          DateTime  @default(now())
+
+  permissions EventPermission[]
+}
+
+model EventPermission {
+  id           Int              @id @default(autoincrement())
+  eventId      Int
+  event        Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  parentUserId Int
+  status       PermissionStatus @default(pending)
+  respondedAt  DateTime?
+
+  @@unique([eventId, parentUserId])
+}
+
+// ─── DAILY PROGRESS ────────────────────────────────────────────────
+
+model DailyProgress {
+  id               Int              @id @default(autoincrement())
+  studentProfileId Int
+  studentProfile   StudentProfile   @relation(fields: [studentProfileId], references: [id])
+  classId          Int
+  class            Class            @relation(fields: [classId], references: [id])
+  date             DateTime         @db.Date
+  attendance       AttendanceStatus
+  classesAttended  Int
+  totalClasses     Int
+  tasksCompleted   Int
+  totalTasks       Int
+  homeworkStatus   HomeworkStatus?
+  todayRating      Int              // 1-5
+  teacherRemark    String
+  behaviorNote     String?
+  reportedById     Int
+  reportedBy       TeacherProfile   @relation("ReportedBy", fields: [reportedById], references: [id])
+  createdAt        DateTime         @default(now())
+
+  @@unique([studentProfileId, date])
+  @@index([studentProfileId, date])
+}
+
+// ─── FEE ───────────────────────────────────────────────────────────
+
+model Fee {
+  id               Int            @id @default(autoincrement())
+  studentProfileId Int
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id])
+  term             String
+  amount           Float
+  status           FeeStatus      @default(pending)
+  paidDate         DateTime?
+  dueDate          DateTime?
+  createdAt        DateTime       @default(now())
+
+  @@index([studentProfileId, status])
+}
+
+// ─── ANNOUNCEMENT ──────────────────────────────────────────────────
+
+model Announcement {
+  id             Int                @id @default(autoincrement())
+  title          String
+  message        String
+  sentById       Int
+  sentBy         User               @relation("SentBy", fields: [sentById], references: [id])
+  targetAudience AnnouncementTarget @default(all)
+  type           AnnouncementType   @default(school)
+  createdAt      DateTime           @default(now())
+}
+
+// ─── AUDIT LOG ─────────────────────────────────────────────────────
+
+model AuditLog {
+  id        Int          @id @default(autoincrement())
+  action    String
+  userId    Int
+  user      User         @relation(fields: [userId], references: [id])
+  details   String?
+  type      AuditLogType
+  createdAt DateTime     @default(now())
+
+  @@index([createdAt])
+  @@index([type])
+}
+
+// ─── SYSTEM CONFIG ─────────────────────────────────────────────────
+
+model SystemConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

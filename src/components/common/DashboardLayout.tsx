@@ -64,8 +64,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const userInitial = user?.name?.charAt(0)?.toUpperCase() || 'U';
   const roleColor = user?.role === 'admin' ? 'from-blue-600 to-teal-500'
     : user?.role === 'teacher' ? 'from-blue-600 to-blue-800'
-    : user?.role === 'parent' ? 'from-teal-500 to-teal-700'
-    : 'from-blue-500 to-blue-700';
+      : user?.role === 'parent' ? 'from-teal-500 to-teal-700'
+        : 'from-blue-500 to-blue-700';
 
   return (
     <div className="min-h-screen bg-[#F0F4F8] flex">
@@ -77,7 +77,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <GraduationCap className="text-white h-5 w-5" />
           </div>
           <div>
-            <span className="text-lg font-bold text-gray-900 tracking-tight block leading-tight">R Academy</span>
+            <span className="text-lg font-bold text-gray-900 tracking-tight block leading-tight">R-education</span>
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{user?.role || 'Portal'}</span>
           </div>
         </div>
@@ -90,11 +90,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <button
                 key={index}
                 onClick={() => handleNavClick(index, item.path)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-semibold transition-all duration-200 w-full text-left group relative ${
-                  isActive
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-semibold transition-all duration-200 w-full text-left group relative ${isActive
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+                  }`}
               >
                 {isActive && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-blue-600 rounded-r-full" />
@@ -129,15 +128,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           <button
             key={index}
             onClick={() => handleNavClick(index, item.path)}
-            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 min-w-[52px] ${
-              activeNav === index
-                ? 'text-blue-600'
-                : 'text-gray-400'
-            }`}
+            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 min-w-[52px] ${activeNav === index
+              ? 'text-blue-600'
+              : 'text-gray-400'
+              }`}
           >
-            <div className={`p-1.5 rounded-lg transition-all ${
-              activeNav === index ? 'bg-blue-50' : ''
-            }`}>
+            <div className={`p-1.5 rounded-lg transition-all ${activeNav === index ? 'bg-blue-50' : ''
+              }`}>
               <item.icon
                 size={20}
                 className={activeNav === index ? 'stroke-[2.5px]' : 'stroke-[1.8px]'}
@@ -163,7 +160,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 <div className={`h-10 w-10 bg-gradient-to-br ${roleColor} rounded-xl flex items-center justify-center mr-3`}>
                   <GraduationCap className="text-white h-5 w-5" />
                 </div>
-                <span className="text-lg font-bold text-gray-900 tracking-tight">R Academy</span>
+                <span className="text-lg font-bold text-gray-900 tracking-tight">R-education</span>
               </div>
               <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                 <X size={20} className="text-gray-500" />
@@ -176,11 +173,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   <button
                     key={index}
                     onClick={() => handleNavClick(index, item.path)}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full text-left ${
-                      isActive
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-500 hover:bg-gray-50'
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full text-left ${isActive
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-500 hover:bg-gray-50'
+                      }`}
                   >
                     <item.icon size={20} className={isActive ? 'stroke-[2.5px]' : 'stroke-2'} />
                     {item.label}

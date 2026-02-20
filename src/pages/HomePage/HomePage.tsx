@@ -1,14 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import HeroSection from '../../components/Home/HeroSection';
-import IntroVideo from '../../components/Home/IntroVideo';
 import AboutClasses from '../../components/Home/AboutClasses';
-import TeacherPosts from '../../components/Posts/TeacherPosts';
+
 import ParentReviews from '../../components/Home/ParentReviews';
-import PastEvents from '../../components/Home/PastEvents';
-import DemoLectures from '../../components/Home/DemoLectures';
+import CultureGrid from '../../components/Home/CultureGrid';
 import WhyChooseUs from '../../components/Home/WhyChooseUs';
 
 const sectionVariants = {
@@ -21,21 +18,7 @@ const sectionVariants = {
 };
 
 const HomePage: React.FC = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
-
-  // If logged in, redirect to appropriate dashboard
-  React.useEffect(() => {
-    if (user) {
-      if (user.role === 'student') navigate('/student/dashboard', { replace: true });
-      else if (user.role === 'teacher') navigate('/teacher/dashboard', { replace: true });
-      else if (user.role === 'parent') navigate('/parent/dashboard', { replace: true });
-      else if (user.role === 'admin') navigate('/admin/dashboard', { replace: true });
-    }
-  }, [user, navigate]);
-
-  // Don't render marketing content while redirecting
-  if (user) return null;
 
   return (
     <div>
@@ -43,28 +26,16 @@ const HomePage: React.FC = () => {
         <HeroSection />
       </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <IntroVideo />
-      </motion.div>
-
       <motion.div id="about" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <AboutClasses />
-      </motion.div>
-
-      <motion.div id="classes" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <TeacherPosts isTeacher={false} />
       </motion.div>
 
       <motion.div id="testimonials" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
         <ParentReviews />
       </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <PastEvents />
-      </motion.div>
-
-      <motion.div id="lectures" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-        <DemoLectures />
+      <motion.div id="life" variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <CultureGrid />
       </motion.div>
 
       <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
@@ -72,36 +43,46 @@ const HomePage: React.FC = () => {
       </motion.div>
 
       {/* Dark CTA Section */}
-      <section className="py-20">
+      <section className="py-24 bg-[#F8F9FC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            className="rounded-3xl px-8 py-16 md:py-20 text-center relative overflow-hidden shadow-2xl shadow-primary-200"
-            style={{ background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, var(--primary-main) 100%)' }}
+          <motion.div
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="rounded-[2.5rem] px-8 py-20 md:py-24 text-center relative overflow-hidden shadow-2xl shadow-indigo-900/20"
+            style={{ background: 'linear-gradient(135deg, #0F172A 0%, #312E81 50%, #4338CA 100%)' }}
           >
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+            {/* Decorative animated circles */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4" />
 
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6">
-                Ready to Start Your Journey?
+              <span className="inline-block py-1.5 px-4 rounded-full bg-white/10 text-indigo-100 text-sm font-semibold tracking-wider mb-6 border border-white/20 backdrop-blur-md">
+                ADMISSIONS OPEN
+              </span>
+              <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-8 tracking-tight">
+                Ready to Join <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-white">R Education?</span>
               </h2>
-              <p className="text-indigo-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                Join hundreds of students who are already excelling in their academics with R Academy. Experience personalized learning today.
+              <p className="text-indigo-100/90 text-lg md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed font-light">
+                Secure your child's future with our structured academic programs. Excellence begins here.
               </p>
-              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <button
-                  onClick={() => navigate('/student/login')}
-                  className="bg-white text-primary-600 font-bold px-10 py-4 rounded-2xl hover:bg-primary-50 transition-all shadow-xl hover:-translate-y-1 active:scale-95"
+                  onClick={() => navigate('/contact')}
+                  className="w-full sm:w-auto bg-white text-indigo-900 font-bold text-lg px-12 py-5 rounded-full hover:bg-indigo-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-95"
                 >
-                  Get Started Today
+                  Enroll Now
                 </button>
-                <button className="border-2 border-white/20 text-white font-bold px-10 py-4 rounded-2xl hover:bg-white/10 transition-all hover:-translate-y-1 active:scale-95 backdrop-blur-sm">
-                  Schedule a Visit
+                <button
+                  onClick={() => navigate('/about')}
+                  className="w-full sm:w-auto border-2 border-white/30 text-white font-bold text-lg px-12 py-5 rounded-full hover:bg-white/10 transition-all hover:border-white/50 hover:-translate-y-1 active:scale-95 backdrop-blur-sm"
+                >
+                  Learn More
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

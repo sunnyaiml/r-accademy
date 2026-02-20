@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, MenuItem, Divider } from '@mui/material';
-import { GraduationCap, Menu as MenuIcon, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Menu as MenuIcon, X } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import logo from '../../assets/logo.png.jpeg';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -48,31 +49,15 @@ const Header: React.FC = () => {
   };
 
   const navItems = [
-    { name: 'Home', id: 'hero' },
-    { name: 'About Us', id: 'about' },
-    { name: 'Classes', id: 'classes' },
-    { name: 'Lectures', id: 'lectures' },
-    { name: 'Testimonials', id: 'testimonials' },
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about' },
+    { name: 'Faculties', path: '/faculties' },
+    { name: 'Students', path: '/students' },
+    { name: 'Timetable', path: '/timetable' },
+    { name: 'Contact', path: '/contact' },
   ];
 
-  const scrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
-    if (window.location.pathname !== '/') {
-      navigate('/#' + id);
-      return;
-    }
-    const element = document.getElementById(id);
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   const userInitial = user?.name?.charAt(0)?.toUpperCase() || 'U';
 
@@ -80,8 +65,8 @@ const Header: React.FC = () => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-            ? 'bg-white/90 backdrop-blur-md shadow-sm py-3'
-            : 'bg-transparent py-5'
+          ? 'bg-white/80 backdrop-blur-xl shadow-md py-4'
+          : 'bg-transparent py-6'
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,67 +76,47 @@ const Header: React.FC = () => {
               className="flex items-center cursor-pointer group"
               onClick={() => navigate('/')}
             >
-              <div className="h-10 w-10 bg-primary-600 rounded-xl flex items-center justify-center mr-3 shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform">
-                <GraduationCap className="text-white h-6 w-6" />
+              <div className="h-14 w-14 bg-white rounded-2xl flex items-center justify-center mr-4 shadow-sm border border-gray-100 group-hover:scale-105 group-hover:shadow-md transition-all duration-300 overflow-hidden">
+                <img src={logo} alt="R Education Logo" className="h-full w-full object-cover" />
               </div>
-              <span className={`text-xl font-bold tracking-tight ${scrolled ? 'text-gray-900' : 'text-gray-900'}`}>
-                R Academy
-              </span>
+              <div className="flex flex-col">
+                <span className={`text-2xl font-extrabold tracking-tight leading-none ${scrolled ? 'text-slate-900' : 'text-slate-900'}`}>
+                  R Education
+                </span>
+                <span className="text-[11px] font-bold text-primary-600 tracking-[0.2em] uppercase mt-1">
+                  Tuition Institute
+                </span>
+              </div>
             </div>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-2">
               {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${scrolled
-                      ? 'text-gray-600 hover:text-primary-600 hover:bg-primary-50'
-                      : 'text-gray-700 hover:text-primary-600 hover:bg-white/50'
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${scrolled
+                    ? 'text-slate-600 hover:text-primary-600 hover:bg-primary-50/80'
+                    : 'text-slate-700 hover:text-primary-600 hover:bg-white/60'
                     }`}
                 >
                   {item.name}
-                </button>
+                </Link>
               ))}
             </nav>
 
             {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-3">
-              {user ? (
-                <>
-                  <button
-                    onClick={handleDashboardClick}
-                    className="text-sm font-medium text-gray-600 hover:text-primary-600 px-3 py-2 transition-colors"
-                  >
-                    Dashboard
-                  </button>
-                  <button
-                    onClick={handleProfileClick}
-                    className="h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-sm hover:ring-4 hover:ring-primary-100 transition-all"
-                  >
-                    {userInitial}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={handleLoginClick}
-                    className="text-sm font-medium text-gray-600 hover:text-primary-600 px-3 py-2 transition-colors"
-                  >
-                    Log in
-                  </button>
-                  <button
-                    onClick={handleLoginClick}
-                    className="bg-gray-900 text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-600 hover:-translate-y-0.5 transition-all shadow-md active:scale-95"
-                  >
-                    Get Started
-                  </button>
-                </>
-              )}
+            <div className="hidden lg:flex items-center gap-3">
+              <button
+                onClick={() => navigate('/contact')}
+                className="bg-primary-600 text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-700 hover:-translate-y-0.5 transition-all shadow-md active:scale-95"
+              >
+                Enroll Now
+              </button>
             </div>
 
             {/* Mobile Actions */}
-            <div className="md:hidden flex items-center gap-2">
+            <div className="lg:hidden flex items-center gap-2">
               {user && (
                 <button
                   onClick={handleProfileClick}
@@ -171,33 +136,25 @@ const Header: React.FC = () => {
 
           {/* Mobile Dropdown Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl overflow-hidden animate-in slide-in-from-top duration-300">
+            <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl overflow-hidden animate-in slide-in-from-top duration-300">
               <div className="px-4 py-6 space-y-1">
                 {navItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-left px-4 py-4 text-base font-medium text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all"
                   >
                     {item.name}
-                  </button>
+                  </Link>
                 ))}
-                <div className="pt-4 border-t border-gray-100 mt-4 space-y-3">
-                  {user ? (
-                    <button
-                      onClick={handleDashboardClick}
-                      className="block w-full text-center py-4 text-base font-semibold text-primary-600 bg-primary-50 rounded-xl"
-                    >
-                      Go to Dashboard
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleLoginClick}
-                      className="w-full bg-gray-900 text-white text-base font-semibold py-4 rounded-xl shadow-lg active:scale-95 transition-transform"
-                    >
-                      Get Started
-                    </button>
-                  )}
+                <div className="pt-4 border-t border-gray-100 mt-4">
+                  <button
+                    onClick={() => { setMobileMenuOpen(false); navigate('/contact'); }}
+                    className="w-full bg-primary-600 text-white text-base font-semibold py-4 rounded-xl shadow-lg active:scale-95 transition-transform"
+                  >
+                    Enroll Now
+                  </button>
                 </div>
               </div>
             </div>
