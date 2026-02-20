@@ -1,6 +1,6 @@
-# R-education - Student-Teacher Management Portal
+# R-Academy - Student-Teacher Management Portal
 
-A comprehensive, role-based academic management platform built with React and TypeScript. R-education provides dedicated dashboards for Students, Teachers, Parents, and Admins — featuring real-time chat, online tests, attendance tracking, assignment management, and more.
+A comprehensive, role-based academic management platform built with React and TypeScript. R-Academy provides dedicated dashboards for Students, Teachers, Parents, and Admins — featuring real-time chat, online tests, attendance tracking, assignment management, and more.
 
 ## Table of Contents
 
@@ -235,10 +235,10 @@ The project uses MSW to mock authentication. Use these credentials in developmen
 
 | Role | Email | Password |
 |------|-------|----------|
-| **Student** | `student@r-education.com` | `password123` |
-| **Teacher** | `teacher@r-education.com` | `password123` |
-| **Parent** | `parent@r-education.com` | `password123` |
-| **Admin** | `admin@r-education.com` | `password123` |
+| **Student** | `student@r-academy.com` | `password123` |
+| **Teacher** | `teacher@r-academy.com` | `password123` |
+| **Parent** | `parent@r-academy.com` | `password123` |
+| **Admin** | `admin@r-academy.com` | `password123` |
 
 ---
 

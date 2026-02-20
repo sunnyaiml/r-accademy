@@ -95,7 +95,7 @@ const TeacherAuth: React.FC = () => {
   return (
     <AuthLayout
       title={tabValue === 0 ? "Teacher Portal" : "Join the Faculty"}
-      subtitle={tabValue === 0 ? "Login to manage your classes and students." : "Register to start teaching at R-education."}
+      subtitle={tabValue === 0 ? "Login to manage your classes and students." : "Register to start teaching at R-Academy."}
       image="/images/teacher-auth-bg.jpg"
     >
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
@@ -173,7 +173,7 @@ const TeacherAuth: React.FC = () => {
               sx: { borderRadius: 3 }
             }}
           />
-
+          
           <Box sx={{ textAlign: 'right', mt: 1, mb: 2 }}>
             <Link href="#" variant="body2" underline="hover" color="secondary">
               Forgot Password?
@@ -264,7 +264,7 @@ const TeacherAuth: React.FC = () => {
               sx: { borderRadius: 3 }
             }}
           />
-          <TextField
+           <TextField
             fullWidth
             label="Specialization (Subject)"
             value={specialization}
@@ -311,7 +311,7 @@ const TeacherAuth: React.FC = () => {
               sx: { borderRadius: 3 }
             }}
           />
-
+          
           <Button
             fullWidth
             type="submit"

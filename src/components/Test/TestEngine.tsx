@@ -76,7 +76,6 @@ const TestEngine: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRemaining]);
 
   // Prevent navigation away during test

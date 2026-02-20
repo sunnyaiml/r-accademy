@@ -98,17 +98,17 @@ const TEACHER_NAV: NavItem[] = [
 ];
 
 const CloudStorageWidget = () => (
-  <div className="bg-gradient-to-br from-primary-600 to-primary-900 rounded-[24px] p-6 text-white shadow-xl shadow-primary-200 relative overflow-hidden group">
+  <div className="bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] rounded-2xl p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
     <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700" />
-    <div className="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
+    <div className="h-10 w-10 bg-white/20 rounded-lg flex items-center justify-center mb-4 backdrop-blur-sm">
       <Cloud size={20} className="text-white" />
     </div>
-    <h3 className="font-black text-lg mb-1 relative z-10">Cloud Storage</h3>
-    <p className="text-primary-100 text-[11px] mb-5 font-medium relative z-10 leading-relaxed uppercase tracking-wider">75GB of 100GB used</p>
-    <div className="w-full bg-black/20 rounded-full h-1.5 mb-5 overflow-hidden relative z-10">
-      <div className="h-full bg-white w-3/4 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
+    <h3 className="font-bold text-lg mb-1 relative z-10">Cloud Storage</h3>
+    <p className="text-indigo-100 text-xs mb-4 relative z-10">75GB of 100GB used</p>
+    <div className="w-full bg-black/20 rounded-full h-1.5 mb-4 overflow-hidden relative z-10">
+      <div className="h-full bg-white w-3/4 rounded-full" />
     </div>
-    <button className="w-full bg-white text-primary-600 text-[10px] font-black py-3 rounded-xl shadow-lg hover:shadow-white/20 hover:-translate-y-1 transition-all active:scale-95 relative z-10 uppercase tracking-widest text-center">
+    <button className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-sm font-medium py-2.5 rounded-lg border border-white/10 transition-colors relative z-10">
       Manage Files
     </button>
   </div>
@@ -172,14 +172,6 @@ const TeacherDashboard: React.FC = () => {
   const [meetingDialogOpen, setMeetingDialogOpen] = useState(false);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [activeSection, setActiveSection] = useState(0);
-
-  // Map sidebar nav to internal tab: Nav 1=Classes(tab0), Nav 2=Students(tab3), Nav 3=Gradebook(tab1), Nav 4=Schedule, Nav 5=Messages
-  const handleSectionChange = (index: number) => {
-    setActiveSection(index);
-    const navToTab: Record<number, number> = { 1: 0, 2: 3, 3: 1 };
-    if (navToTab[index] !== undefined) setActiveTab(navToTab[index]);
-  };
   const [newEvent, setNewEvent] = useState({ title: '', date: '', type: 'event', grade: '' });
   const [newTest, setNewTest] = useState({ title: '', subject: '', grade: '', date: '', duration: '', totalMarks: '', type: 'quiz' });
   const [newMeeting, setNewMeeting] = useState({
@@ -226,7 +218,7 @@ const TeacherDashboard: React.FC = () => {
         queryClient.invalidateQueries('teacherMeetings');
         setSuccessMessage(`Meeting started! ${response.data.notificationsSent} participants notified.`);
         const jitsiDomain = process.env.REACT_APP_JITSI_DOMAIN || 'meet.jit.si';
-        const roomName = `r-education-${meetingId}`;
+        const roomName = `r-academy-${meetingId}`;
         window.open(`https://${jitsiDomain}/${roomName}`, '_blank');
       },
       onError: (error: any) => {
@@ -313,7 +305,7 @@ const TeacherDashboard: React.FC = () => {
       assignment: { bg: '#FEF3C7', fg: '#F59E0B' },
       event: { bg: '#DBEAFE', fg: '#3B82F6' },
       trip: { bg: '#D1FAE5', fg: '#10B981' },
-      meeting: { bg: '#EDE9FE', fg: '#0D9488' },
+      meeting: { bg: '#EDE9FE', fg: '#7C3AED' },
     };
     return colors[type] || colors.event;
   };
@@ -333,11 +325,9 @@ const TeacherDashboard: React.FC = () => {
   return (
     <DashboardLayout
       navItems={TEACHER_NAV}
-      greeting={`Good Morning, ${user?.name?.split(' ')[0] || 'Teacher'}!`}
+      greeting={`Good Morning, ${user?.name?.split(' ')[0] || 'Teacher'}! 👋`}
       subtitle={`You have ${teacherAssignments.filter(a => a.status === 'active').length} assignments pending review today.`}
       bottomWidget={<CloudStorageWidget />}
-      activeSection={activeSection}
-      onSectionChange={handleSectionChange}
     >
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
         {/* Stats Row */}
@@ -346,8 +336,8 @@ const TeacherDashboard: React.FC = () => {
             value={totalStudents}
             label="Total Students"
             icon={<Users size={24} />}
-            iconBg="bg-primary-50"
-            iconColor="text-primary-600"
+            iconBg="bg-purple-100"
+            iconColor="text-purple-600"
           />
           <StatBox
             value="92%"
@@ -411,9 +401,9 @@ const TeacherDashboard: React.FC = () => {
                           <Card
                             elevation={0}
                             sx={{
-                              border: '1px solid rgba(0,0,0,0.06)', borderRadius: 4,
-                              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                              '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 12px 24px rgba(0,0,0,0.04)', borderColor: 'var(--primary-main)' }
+                              border: '1px solid rgba(0,0,0,0.06)', borderRadius: 3,
+                              transition: 'transform 0.2s, box-shadow 0.2s',
+                              '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', borderColor: '#4F46E5' }
                             }}
                           >
                             <CardContent sx={{ pb: 1 }}>
@@ -567,7 +557,7 @@ const TeacherDashboard: React.FC = () => {
                           <TableRow key={s.id} hover>
                             <TableCell>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: '#EFF6FF', color: '#2563EB' }}>
+                                <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: '#EEF2FF', color: '#4F46E5' }}>
                                   {s.name.split(' ').map(n => n[0]).join('')}
                                 </Avatar>
                                 <Typography variant="body2" fontWeight="600">{s.name}</Typography>
@@ -676,7 +666,7 @@ const TeacherDashboard: React.FC = () => {
                           }}>
                             <CardContent>
                               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-                                <Avatar sx={{ bgcolor: canStart ? '#10B981' : isPast ? '#9CA3AF' : '#2563EB', mr: 1.5 }}>
+                                <Avatar sx={{ bgcolor: canStart ? '#10B981' : isPast ? '#9CA3AF' : '#4F46E5', mr: 1.5 }}>
                                   <VideoCall />
                                 </Avatar>
                                 <Box sx={{ flex: 1 }}>
@@ -758,7 +748,7 @@ const TeacherDashboard: React.FC = () => {
                   <SectionTitle variant="h6" sx={{ mb: 0 }}>Events & Trips</SectionTitle>
                   <IconButton
                     onClick={() => setCreateEventOpen(true)}
-                    sx={{ bgcolor: '#EFF6FF', color: '#2563EB', '&:hover': { bgcolor: '#2563EB', color: 'white' } }}
+                    sx={{ bgcolor: '#EEF2FF', color: '#4F46E5', '&:hover': { bgcolor: '#4F46E5', color: 'white' } }}
                   >
                     <AddIcon />
                   </IconButton>

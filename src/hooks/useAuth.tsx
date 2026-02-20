@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { initializeSocket, disconnectSocket } from '../utils/socket';
-import { supabase } from '../utils/supabaseClient';
 
 interface User {
   id: string;
@@ -38,9 +37,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api';
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [otpSent, setOtpSent] = useState(false);
@@ -48,45 +49,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        // Map supabase user to our User interface (mocking role for now)
-        const mappedUser: User = {
-          id: session.user.id,
-          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
-          email: session.user.email || '',
-          phone: session.user.phone || '',
-          role: session.user.user_metadata?.role || 'student', // Defaulting to student, should come from metadata
-        };
-        setUser(mappedUser);
-        initializeSocket(session.access_token);
-      }
-      setLoading(false);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        const mappedUser: User = {
-          id: session.user.id,
-          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
-          email: session.user.email || '',
-          phone: session.user.phone || '',
-          role: session.user.user_metadata?.role || 'student',
-        };
-        setUser(mappedUser);
-        initializeSocket(session.access_token);
-      } else {
-        setUser(null);
-        disconnectSocket();
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const clearMessages = () => {
@@ -94,8 +62,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSuccessMessage(null);
   };
 
-  const handleError = (err: any) => {
-    const message = err.message || 'An error occurred';
+  const handleError = (error: any) => {
+    const message = error.response?.data?.message || error.message || 'An error occurred';
     setError(message);
     setLoading(false);
   };
@@ -105,24 +73,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       clearMessages();
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) throw error;
+      const data = await response.json();
 
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setUser(data.user);
       setSuccessMessage('Login successful');
 
-      // The onAuthStateChange listener will handle setting the user and socket
-      const role = data.user?.user_metadata?.role || 'student';
+      // Initialize Socket.io connection
+      initializeSocket(data.token);
+
       const roleRoutes: Record<string, string> = {
         student: '/student/dashboard',
         teacher: '/teacher/dashboard',
         parent: '/parent/dashboard',
         admin: '/admin/dashboard',
       };
-      navigate(roleRoutes[role] || '/');
+      navigate(roleRoutes[data.user.role] || '/');
     } catch (error: any) {
       handleError(error);
     } finally {
@@ -130,26 +109,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (data: { name: string; email: string; phone: string; password: string; role?: string }) => {
+  const register = async (data: { name: string; email: string; phone: string; password: string }) => {
     try {
       setLoading(true);
       clearMessages();
+      setTempUserData(data);
 
-      const { error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            name: data.name,
-            phone: data.phone,
-            role: data.role || 'student', // Store custom role in metadata
-          }
-        }
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
 
-      if (error) throw error;
+      const responseData = await response.json();
 
-      setSuccessMessage('Registration successful. Please check your email to verify your account.');
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Registration failed');
+      }
+
+      setSuccessMessage('Registration successful. Please verify your email.');
+      await sendOtp(data.email);
     } catch (error: any) {
       handleError(error);
     } finally {
@@ -162,11 +143,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       clearMessages();
 
-      const { error } = await supabase.auth.signInWithOtp({
-        email: contact,
+      const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ contact }),
       });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send OTP');
+      }
 
       setOtpSent(true);
       setSuccessMessage('OTP sent successfully');
@@ -182,26 +171,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       clearMessages();
 
-      const { data, error } = await supabase.auth.verifyOtp({
-        email: tempUserData?.email, // Assuming email is stored in tempUserData when OTP is requested
-        token: otp,
-        type: 'magiclink' // Or 'signup'/'recovery' depending on context
+      const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ otp, ...tempUserData }),
       });
 
-      if (error) throw error;
+      const data = await response.json();
 
-      setSuccessMessage('Verified successfully');
+      if (!response.ok) {
+        throw new Error(data.message || 'OTP verification failed');
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setUser(data.user);
+      setSuccessMessage('Account verified successfully');
       setTempUserData(null);
       setOtpSent(false);
 
-      const role = data.user?.user_metadata?.role || 'student';
+      // Initialize Socket.io connection
+      initializeSocket(data.token);
+
       const roleRoutes: Record<string, string> = {
         student: '/student/dashboard',
         teacher: '/teacher/dashboard',
         parent: '/parent/dashboard',
         admin: '/admin/dashboard',
       };
-      navigate(roleRoutes[role] || '/');
+      navigate(roleRoutes[data.user.role] || '/');
     } catch (error: any) {
       handleError(error);
     } finally {
@@ -214,9 +214,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       clearMessages();
 
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      // Disconnect Socket.io
+      disconnectSocket();
 
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       setUser(null);
       navigate('/');
     } catch (error: any) {

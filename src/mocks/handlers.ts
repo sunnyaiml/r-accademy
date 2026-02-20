@@ -7,7 +7,7 @@ export const handlers = [
         const { email, password } = await request.json() as any;
 
         const credentials: Record<string, any> = {
-            'student@r-education.com': {
+            'student@r-academy.com': {
                 id: 's1',
                 name: 'Rahul Sharma',
                 role: 'student',
@@ -15,20 +15,20 @@ export const handlers = [
                 studentId: '12345',
                 phone: '1234567890',
             },
-            'teacher@r-education.com': {
+            'teacher@r-academy.com': {
                 id: 't1',
                 name: 'Dr. Robert Smith',
                 role: 'teacher',
                 specialization: 'Mathematics',
                 phone: '9876543210',
             },
-            'parent@r-education.com': {
+            'parent@r-academy.com': {
                 id: 'p1',
                 name: 'Mrs. Sharma',
                 role: 'parent',
                 phone: '5551234567',
             },
-            'admin@r-education.com': {
+            'admin@r-academy.com': {
                 id: 'a1',
                 name: 'Super Admin',
                 role: 'admin',

@@ -16,6 +16,8 @@ import {
   CardContent,
   IconButton,
   Chip,
+  Tab,
+  Tabs,
   Table,
   TableBody,
   TableCell,
@@ -32,6 +34,24 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
+import People from '@mui/icons-material/People';
+import School from '@mui/icons-material/School';
+import Class from '@mui/icons-material/Class';
+import Assessment from '@mui/icons-material/Assessment';
+import Settings from '@mui/icons-material/Settings';
+import Announcement from '@mui/icons-material/Announcement';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import Visibility from '@mui/icons-material/Visibility';
+import CalendarMonth from '@mui/icons-material/CalendarMonth';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Send from '@mui/icons-material/Send';
+import ArrowUpward from '@mui/icons-material/ArrowUpward';
+import BarChart from '@mui/icons-material/BarChart';
+import AdminPanelSettings from '@mui/icons-material/AdminPanelSettings';
+import FamilyRestroom from '@mui/icons-material/FamilyRestroom';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Cancel from '@mui/icons-material/Cancel';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -40,23 +60,6 @@ import {
   BookOpen,
   BarChart3,
   Settings as SettingsIcon,
-  Plus as AddIcon,
-  Edit2 as EditIcon,
-  Eye as Visibility,
-  Calendar as CalendarMonth,
-  UserPlus as PersonAdd,
-  Send as SendIcon,
-  ArrowUp as ArrowUpward,
-  BarChart as BarChartIcon,
-  Megaphone as AnnouncementIcon,
-  ShieldCheck as AdminPanelSettingsIcon,
-  CheckCircle2 as CheckCircleIcon,
-  XCircle as CancelIcon,
-  Settings as SettingsIconSmall,
-  School as SchoolIcon,
-  TrendingUp,
-  FileBarChart,
-  Activity,
 } from 'lucide-react';
 import DashboardLayout, { NavItem } from '../common/DashboardLayout';
 import {
@@ -119,7 +122,7 @@ interface AuditEntry {
 }
 
 const SuperAdminDashboard: React.FC = () => {
-  const [activeSection, setActiveSection] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
   const [addTeacherOpen, setAddTeacherOpen] = useState(false);
   const [createClassOpen, setCreateClassOpen] = useState(false);
   const [broadcastOpen, setBroadcastOpen] = useState(false);
@@ -186,537 +189,14 @@ const SuperAdminDashboard: React.FC = () => {
     ],
   };
 
-  const getAuditIcon = (type: string) => {
-    switch (type) {
-      case 'teacher': return <Users size={16} />;
-      case 'student': return <GraduationCap size={16} />;
-      case 'class': return <BookOpen size={16} />;
-      case 'announcement': return <AnnouncementIcon size={16} />;
-      case 'system': return <SettingsIconSmall size={16} />;
-      default: return <Activity size={16} />;
-    }
-  };
-
   const getAuditColor = (type: string) => {
     switch (type) {
-      case 'teacher': return { bg: '#EFF6FF', fg: '#2563EB', border: '#BFDBFE' };
-      case 'student': return { bg: '#F0FDF4', fg: '#16A34A', border: '#BBF7D0' };
-      case 'class': return { bg: '#F0FDFA', fg: '#0D9488', border: '#99F6E4' };
-      case 'announcement': return { bg: '#FFFBEB', fg: '#D97706', border: '#FDE68A' };
-      case 'system': return { bg: '#F0F9FF', fg: '#0284C7', border: '#BAE6FD' };
-      default: return { bg: '#F9FAFB', fg: '#6B7280', border: '#E5E7EB' };
-    }
-  };
-
-  // Section 0: Dashboard Overview
-  const renderOverview = () => (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <Grid container spacing={3}>
-        {/* Stats Row */}
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={6} sm={3}>
-              <StatBox
-                value={teachers.filter(t => t.status === 'active').length}
-                label="Active Teachers"
-                icon={<Users size={22} />}
-                iconBg="bg-blue-50"
-                iconColor="text-blue-600"
-              />
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <StatBox
-                value={students.length}
-                label="Total Students"
-                icon={<GraduationCap size={22} />}
-                iconBg="bg-teal-50"
-                iconColor="text-teal-600"
-              />
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <StatBox
-                value={classRecords.length}
-                label="Active Classes"
-                icon={<BookOpen size={22} />}
-                iconBg="bg-sky-50"
-                iconColor="text-sky-600"
-              />
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <StatBox
-                value="45"
-                label="Total Parents"
-                icon={<Users size={22} />}
-                iconBg="bg-amber-50"
-                iconColor="text-amber-600"
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        {/* Quick Actions */}
-        <Grid item xs={12} md={7}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">Quick Actions</SectionTitle>
-              <Grid container spacing={2}>
-                <Grid item xs={6} sm={4}>
-                  <Button fullWidth variant="outlined" startIcon={<PersonAdd size={16} />} onClick={() => setAddTeacherOpen(true)}
-                    sx={{ py: 2, borderRadius: 3, textTransform: 'none', borderColor: '#E2E8F0', color: '#475569', fontWeight: 600, fontSize: '0.8rem', '&:hover': { borderColor: '#2563EB', color: '#2563EB', bgcolor: '#EFF6FF' } }}>
-                    Appoint Teacher
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <Button fullWidth variant="outlined" startIcon={<BookOpen size={16} />} onClick={() => setCreateClassOpen(true)}
-                    sx={{ py: 2, borderRadius: 3, textTransform: 'none', borderColor: '#E2E8F0', color: '#475569', fontWeight: 600, fontSize: '0.8rem', '&:hover': { borderColor: '#0D9488', color: '#0D9488', bgcolor: '#F0FDFA' } }}>
-                    Create Class
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <Button fullWidth variant="outlined" startIcon={<AnnouncementIcon size={16} />} onClick={() => setBroadcastOpen(true)}
-                    sx={{ py: 2, borderRadius: 3, textTransform: 'none', borderColor: '#E2E8F0', color: '#475569', fontWeight: 600, fontSize: '0.8rem', '&:hover': { borderColor: '#D97706', color: '#D97706', bgcolor: '#FFFBEB' } }}>
-                    Broadcast
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <Button fullWidth variant="outlined" startIcon={<ArrowUpward size={16} />} onClick={() => setPromotionOpen(true)}
-                    sx={{ py: 2, borderRadius: 3, textTransform: 'none', borderColor: '#E2E8F0', color: '#475569', fontWeight: 600, fontSize: '0.8rem', '&:hover': { borderColor: '#7C3AED', color: '#7C3AED', bgcolor: '#F5F3FF' } }}>
-                    Promote Students
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <Button fullWidth variant="outlined" startIcon={<SettingsIconSmall size={16} />}
-                    onClick={() => setActiveSection(5)}
-                    sx={{ py: 2, borderRadius: 3, textTransform: 'none', borderColor: '#E2E8F0', color: '#475569', fontWeight: 600, fontSize: '0.8rem', '&:hover': { borderColor: '#475569', color: '#475569', bgcolor: '#F8FAFC' } }}>
-                    System Config
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <Button fullWidth variant="outlined" startIcon={<FileBarChart size={16} />}
-                    onClick={() => setActiveSection(4)}
-                    sx={{ py: 2, borderRadius: 3, textTransform: 'none', borderColor: '#E2E8F0', color: '#475569', fontWeight: 600, fontSize: '0.8rem', '&:hover': { borderColor: '#0EA5E9', color: '#0EA5E9', bgcolor: '#F0F9FF' } }}>
-                    View Analytics
-                  </Button>
-                </Grid>
-              </Grid>
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-
-        {/* Recent Activity */}
-        <Grid item xs={12} md={5}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">Recent Activity</SectionTitle>
-              <List disablePadding>
-                {auditLog.slice(0, 5).map((entry) => {
-                  const colors = getAuditColor(entry.type);
-                  return (
-                    <ListItem
-                      key={entry.id}
-                      sx={{ px: 1.5, py: 1, mb: 0.5, borderRadius: 2, '&:hover': { bgcolor: '#F8FAFC' } }}
-                    >
-                      <ListItemAvatar sx={{ minWidth: 40 }}>
-                        <Avatar sx={{ bgcolor: colors.bg, color: colors.fg, width: 32, height: 32 }}>
-                          {getAuditIcon(entry.type)}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={<Typography variant="body2" fontWeight="600" sx={{ fontSize: '0.8rem' }}>{entry.action}</Typography>}
-                        secondary={
-                          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
-                            {entry.details} &middot; {entry.timestamp.split(' ').slice(1).join(' ')}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  );
-                })}
-              </List>
-              <Button fullWidth sx={{ mt: 1, borderRadius: 2, textTransform: 'none', fontSize: '0.8rem', fontWeight: 600, color: '#64748B' }}
-                onClick={() => setActiveSection(5)}>
-                View Full Audit Log
-              </Button>
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-
-        {/* System Config Summary */}
-        <Grid item xs={12}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">System Configuration</SectionTitle>
-              <Grid container spacing={3}>
-                {[
-                  { icon: <CalendarMonth size={20} />, label: 'Academic Year', value: '2025-2026', color: '#2563EB' },
-                  { icon: <BarChartIcon size={20} />, label: 'Grading Scale', value: 'A+ (90%), A (80%), B+ (70%)', color: '#0D9488' },
-                  { icon: <AdminPanelSettingsIcon size={20} />, label: 'Term Structure', value: '3 Terms (Apr-Jul, Aug-Nov, Dec-Mar)', color: '#0EA5E9' },
-                  { icon: <TrendingUp size={20} />, label: 'Promotion Criteria', value: 'Min 75% attendance, Min 2.0 GPA', color: '#10B981' },
-                ].map((item, i) => (
-                  <Grid item xs={12} sm={6} md={3} key={i}>
-                    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-                      <Box sx={{ p: 1, borderRadius: 2, bgcolor: `${item.color}10`, color: item.color, flexShrink: 0 }}>
-                        {item.icon}
-                      </Box>
-                      <Box>
-                        <Typography variant="body2" fontWeight="700" sx={{ fontSize: '0.8rem', color: '#1E293B' }}>{item.label}</Typography>
-                        <Typography variant="caption" color="text.secondary">{item.value}</Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-      </Grid>
-    </motion.div>
-  );
-
-  // Section 1: Teacher Management
-  const renderTeachers = () => (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <motion.div variants={itemVariants}>
-        <DashboardPaper>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <SectionTitle variant="h6" sx={{ mb: 0 }}>Teacher Management</SectionTitle>
-            <Button startIcon={<PersonAdd size={16} />} variant="contained" onClick={() => setAddTeacherOpen(true)}
-              sx={{ borderRadius: 2.5, textTransform: 'none', fontWeight: 600, px: 3, boxShadow: 'none', '&:hover': { boxShadow: '0 4px 12px rgba(37,99,235,0.2)' } }}>
-              Appoint Teacher
-            </Button>
-          </Box>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ '& th': { fontWeight: 700, color: '#64748B', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderColor: '#F1F5F9' } }}>
-                  <TableCell>Teacher</TableCell>
-                  <TableCell>Subject</TableCell>
-                  <TableCell>Classes</TableCell>
-                  <TableCell>Students</TableCell>
-                  <TableCell>Joined</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell align="right">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {teachers.map((t) => (
-                  <TableRow key={t.id} hover sx={{ '& td': { borderColor: '#F1F5F9' }, '&:hover': { bgcolor: '#F8FAFC' } }}>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Avatar sx={{ width: 34, height: 34, fontSize: '0.75rem', fontWeight: 700, bgcolor: t.status === 'active' ? '#EFF6FF' : '#F1F5F9', color: t.status === 'active' ? '#2563EB' : '#94A3B8' }}>
-                          {t.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </Avatar>
-                        <Typography variant="body2" fontWeight="600" sx={{ fontSize: '0.85rem' }}>{t.name}</Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell><Typography variant="body2" color="text.secondary">{t.subject}</Typography></TableCell>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                        {t.classes.map(c => <Chip key={c} label={c} size="small" sx={{ height: 22, fontSize: '0.7rem', fontWeight: 600, bgcolor: '#F0FDFA', color: '#0D9488', borderRadius: 1.5 }} />)}
-                      </Box>
-                    </TableCell>
-                    <TableCell><Typography variant="body2" fontWeight="600">{t.students}</Typography></TableCell>
-                    <TableCell><Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>{t.joinDate}</Typography></TableCell>
-                    <TableCell><StatusChip status={t.status} /></TableCell>
-                    <TableCell align="right">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-                        <IconButton size="small" sx={{ color: '#2563EB' }}><EditIcon size={16} /></IconButton>
-                        <IconButton size="small" sx={{ color: '#64748B' }}><Visibility size={16} /></IconButton>
-                        <IconButton size="small" sx={{ color: t.status === 'active' ? '#EF4444' : '#10B981' }}>
-                          {t.status === 'active' ? <CancelIcon size={16} /> : <CheckCircleIcon size={16} />}
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DashboardPaper>
-      </motion.div>
-    </motion.div>
-  );
-
-  // Section 2: Student Records
-  const renderStudents = () => (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <motion.div variants={itemVariants}>
-        <DashboardPaper>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 1 }}>
-            <SectionTitle variant="h6" sx={{ mb: 0 }}>Student Records</SectionTitle>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button startIcon={<ArrowUpward size={16} />} variant="outlined" onClick={() => setPromotionOpen(true)}
-                sx={{ borderRadius: 2.5, textTransform: 'none', fontWeight: 600, borderColor: '#E2E8F0' }}>
-                Promote
-              </Button>
-              <Button startIcon={<PersonAdd size={16} />} variant="contained"
-                sx={{ borderRadius: 2.5, textTransform: 'none', fontWeight: 600, boxShadow: 'none' }}>
-                Enroll Student
-              </Button>
-            </Box>
-          </Box>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ '& th': { fontWeight: 700, color: '#64748B', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderColor: '#F1F5F9' } }}>
-                  <TableCell>Student</TableCell>
-                  <TableCell>Grade</TableCell>
-                  <TableCell>Section</TableCell>
-                  <TableCell>Attendance</TableCell>
-                  <TableCell>GPA</TableCell>
-                  <TableCell>Parent</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell align="right">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {students.map((s) => (
-                  <TableRow key={s.id} hover sx={{ '& td': { borderColor: '#F1F5F9' }, '&:hover': { bgcolor: '#F8FAFC' } }}>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Avatar sx={{ width: 34, height: 34, fontSize: '0.7rem', fontWeight: 700, bgcolor: '#EFF6FF', color: '#2563EB' }}>
-                          {s.name.split(' ').map(n => n[0]).join('')}
-                        </Avatar>
-                        <Typography variant="body2" fontWeight="600" sx={{ fontSize: '0.85rem' }}>{s.name}</Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>{s.grade}</TableCell>
-                    <TableCell>{s.section}</TableCell>
-                    <TableCell>
-                      <ProgressWithLabel value={s.attendance} color={s.attendance >= 90 ? '#10B981' : s.attendance >= 75 ? '#F59E0B' : '#EF4444'} />
-                    </TableCell>
-                    <TableCell>
-                      <Chip label={s.gpa.toFixed(1)} size="small"
-                        sx={{
-                          fontWeight: 700, borderRadius: 1.5, fontSize: '0.75rem',
-                          bgcolor: s.gpa >= 3.5 ? '#F0FDF4' : s.gpa >= 2.5 ? '#FFFBEB' : '#FEF2F2',
-                          color: s.gpa >= 3.5 ? '#16A34A' : s.gpa >= 2.5 ? '#D97706' : '#DC2626',
-                        }} />
-                    </TableCell>
-                    <TableCell><Typography variant="caption" color="text.secondary">{s.parentName}</Typography></TableCell>
-                    <TableCell><StatusChip status={s.status} /></TableCell>
-                    <TableCell align="right">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-                        <IconButton size="small" sx={{ color: '#64748B' }}><Visibility size={16} /></IconButton>
-                        <IconButton size="small" sx={{ color: '#2563EB' }}><EditIcon size={16} /></IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DashboardPaper>
-      </motion.div>
-    </motion.div>
-  );
-
-  // Section 3: Class Management
-  const renderClasses = () => (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <motion.div variants={itemVariants}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h6" fontWeight="700" color="#1E293B">Class Management</Typography>
-          <Button startIcon={<AddIcon size={16} />} variant="contained" onClick={() => setCreateClassOpen(true)}
-            sx={{ borderRadius: 2.5, textTransform: 'none', fontWeight: 600, boxShadow: 'none' }}>
-            Create Class
-          </Button>
-        </Box>
-        <Grid container spacing={2}>
-          {classRecords.map((cls) => {
-            const fillPercent = Math.round((cls.students / cls.capacity) * 100);
-            const isFull = fillPercent > 90;
-            return (
-              <Grid item xs={12} sm={6} md={4} key={cls.id}>
-                <Card elevation={0} sx={{
-                  border: '1px solid', borderColor: '#E2E8F0', borderRadius: 4,
-                  transition: 'all 0.2s',
-                  '&:hover': { borderColor: '#2563EB', boxShadow: '0 4px 16px rgba(37,99,235,0.08)' }
-                }}>
-                  <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                      <Box>
-                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.1rem', color: '#1E293B' }}>
-                          Grade {cls.grade} - {cls.section}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-                          {cls.classTeacher}
-                        </Typography>
-                      </Box>
-                      <IconButton size="small" sx={{ color: '#94A3B8' }}><EditIcon size={16} /></IconButton>
-                    </Box>
-                    <Box sx={{ mt: 2, mb: 1 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                        <Typography variant="caption" color="text.secondary">Capacity</Typography>
-                        <Typography variant="caption" fontWeight="bold" sx={{ color: isFull ? '#EF4444' : '#1E293B' }}>{cls.students}/{cls.capacity}</Typography>
-                      </Box>
-                      <ProgressWithLabel value={fillPercent} color={isFull ? '#EF4444' : '#10B981'} />
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
-                      <Chip label={`${cls.students} Students`} size="small" icon={<SchoolIcon size={12} />}
-                        sx={{ borderRadius: 1.5, fontSize: '0.7rem', fontWeight: 600, bgcolor: '#EFF6FF', color: '#2563EB' }} />
-                      <Chip label={`${cls.subjects} Subjects`} size="small" variant="outlined"
-                        sx={{ borderRadius: 1.5, fontSize: '0.7rem', borderColor: '#E2E8F0' }} />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </motion.div>
-    </motion.div>
-  );
-
-  // Section 4: Analytics
-  const renderAnalytics = () => (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">Enrollment Trend</SectionTitle>
-              {analyticsData.enrollmentTrend.map((item) => (
-                <Box key={item.year} sx={{ mb: 2 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="body2" fontWeight="500">{item.year}</Typography>
-                    <Typography variant="body2" fontWeight="700" color="#1E293B">{item.count} students</Typography>
-                  </Box>
-                  <ProgressWithLabel value={Math.round((item.count / 200) * 100)} color="linear-gradient(90deg, #2563EB, #0D9488)" />
-                </Box>
-              ))}
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">Attendance by Grade</SectionTitle>
-              {analyticsData.attendanceByGrade.map((item) => (
-                <Box key={item.grade} sx={{ mb: 2 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="body2" fontWeight="500">{item.grade} Grade</Typography>
-                    <Typography variant="body2" fontWeight="700" color="#1E293B">{item.avg}%</Typography>
-                  </Box>
-                  <ProgressWithLabel value={item.avg} color={item.avg >= 90 ? '#10B981' : item.avg >= 80 ? '#F59E0B' : '#EF4444'} />
-                </Box>
-              ))}
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-
-        <Grid item xs={12}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">Average Performance by Subject</SectionTitle>
-              <Grid container spacing={2}>
-                {analyticsData.performanceBySubject.map((item) => (
-                  <Grid item xs={6} sm={4} md={2.4} key={item.subject}>
-                    <Card elevation={0} sx={{ border: '1px solid', borderColor: '#E2E8F0', borderRadius: 3, textAlign: 'center', p: 2.5 }}>
-                      <Typography variant="h4" fontWeight="800"
-                        sx={{ color: item.avg >= 80 ? '#10B981' : item.avg >= 70 ? '#F59E0B' : '#EF4444' }}>
-                        {item.avg}%
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" fontWeight="600">{item.subject}</Typography>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-      </Grid>
-    </motion.div>
-  );
-
-  // Section 5: Settings / Audit Log
-  const renderSettings = () => (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <Grid container spacing={3}>
-        {/* System Config */}
-        <Grid item xs={12} md={5}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">System Configuration</SectionTitle>
-              <List dense disablePadding>
-                {[
-                  { icon: <CalendarMonth size={18} />, label: 'Academic Year', value: '2025-2026', color: '#2563EB' },
-                  { icon: <BarChartIcon size={18} />, label: 'Grading Scale', value: 'A+ (90%), A (80%), B+ (70%), B (60%)', color: '#0D9488' },
-                  { icon: <AdminPanelSettingsIcon size={18} />, label: 'Term Structure', value: '3 Terms (Apr-Jul, Aug-Nov, Dec-Mar)', color: '#0EA5E9' },
-                  { icon: <ArrowUpward size={18} />, label: 'Promotion Criteria', value: 'Min 75% attendance, Min 2.0 GPA', color: '#10B981' },
-                ].map((item, i) => (
-                  <React.Fragment key={i}>
-                    <ListItem sx={{ px: 0, py: 1.5 }}>
-                      <ListItemIcon sx={{ minWidth: 40, color: item.color }}>
-                        <Box sx={{ p: 0.75, borderRadius: 1.5, bgcolor: `${item.color}12` }}>{item.icon}</Box>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={<Typography variant="body2" fontWeight="700" sx={{ fontSize: '0.8rem' }}>{item.label}</Typography>}
-                        secondary={<Typography variant="caption" color="text.secondary">{item.value}</Typography>}
-                      />
-                    </ListItem>
-                    {i < 3 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List>
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-
-        {/* Full Audit Log */}
-        <Grid item xs={12} md={7}>
-          <motion.div variants={itemVariants}>
-            <DashboardPaper>
-              <SectionTitle variant="h6">Audit Log</SectionTitle>
-              <List disablePadding>
-                {auditLog.map((entry) => {
-                  const colors = getAuditColor(entry.type);
-                  return (
-                    <ListItem
-                      key={entry.id}
-                      sx={{
-                        mb: 1, borderRadius: 2.5, border: '1px solid', borderColor: '#F1F5F9',
-                        borderLeft: '3px solid', borderLeftColor: colors.fg,
-                        '&:hover': { bgcolor: '#FAFBFC' },
-                      }}
-                    >
-                      <ListItemAvatar sx={{ minWidth: 44 }}>
-                        <Avatar sx={{ bgcolor: colors.bg, color: colors.fg, width: 34, height: 34 }}>
-                          {getAuditIcon(entry.type)}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography variant="body2" fontWeight="600" sx={{ fontSize: '0.8rem' }}>{entry.action}</Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>{entry.timestamp}</Typography>
-                          </Box>
-                        }
-                        secondary={
-                          <Typography variant="caption" color="text.secondary">{entry.details}</Typography>
-                        }
-                      />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </DashboardPaper>
-          </motion.div>
-        </Grid>
-      </Grid>
-    </motion.div>
-  );
-
-  const renderSection = () => {
-    switch (activeSection) {
-      case 0: return renderOverview();
-      case 1: return renderTeachers();
-      case 2: return renderStudents();
-      case 3: return renderClasses();
-      case 4: return renderAnalytics();
-      case 5: return renderSettings();
-      default: return renderOverview();
+      case 'teacher': return 'primary.main';
+      case 'student': return 'success.main';
+      case 'class': return 'secondary.main';
+      case 'announcement': return 'warning.main';
+      case 'system': return 'info.main';
+      default: return 'text.secondary';
     }
   };
 
@@ -725,135 +205,485 @@ const SuperAdminDashboard: React.FC = () => {
       navItems={ADMIN_NAV}
       greeting="Admin Control Center"
       subtitle="Manage teachers, students, classes, and system settings"
-      activeSection={activeSection}
-      onSectionChange={setActiveSection}
     >
-      {renderSection()}
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
+          <Grid container spacing={3}>
+            {/* System Overview Stats */}
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={6} sm={3}>
+                  <StatBox value={teachers.filter(t => t.status === 'active').length} label="Active Teachers" icon={<People sx={{ fontSize: 40 }} />} gradient="linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)" />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <StatBox value={students.length} label="Total Students" icon={<School sx={{ fontSize: 40 }} />} gradient="linear-gradient(135deg, #000428 0%, #004e92 100%)" />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <StatBox value={classRecords.length} label="Active Classes" icon={<Class sx={{ fontSize: 40 }} />} gradient="linear-gradient(135deg, #373B44 0%, #4286f4 100%)" />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <StatBox value="45" label="Total Parents" icon={<FamilyRestroom sx={{ fontSize: 40 }} />} gradient="linear-gradient(135deg, #232526 0%, #414345 100%)" />
+                </Grid>
+              </Grid>
+            </Grid>
 
-      {/* Add Teacher Dialog */}
-      <Dialog open={addTeacherOpen} onClose={() => setAddTeacherOpen(false)} PaperProps={{ sx: { borderRadius: 4, width: '100%', maxWidth: 500 } }}>
-        <DialogTitle sx={{ borderBottom: '1px solid', borderColor: '#F1F5F9', pb: 2 }}>
-          <Typography variant="h6" fontWeight="bold">Appoint New Teacher</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
-            <TextField label="Full Name" fullWidth value={newTeacher.name} onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })} />
-            <TextField label="Email" type="email" fullWidth value={newTeacher.email} onChange={(e) => setNewTeacher({ ...newTeacher, email: e.target.value })} />
-            <TextField label="Phone" fullWidth value={newTeacher.phone} onChange={(e) => setNewTeacher({ ...newTeacher, phone: e.target.value })} />
-            <FormControl fullWidth>
-              <InputLabel>Subject / Specialization</InputLabel>
-              <Select value={newTeacher.subject} label="Subject / Specialization" onChange={(e) => setNewTeacher({ ...newTeacher, subject: e.target.value })}>
-                <MenuItem value="Mathematics">Mathematics</MenuItem>
-                <MenuItem value="Physics">Physics</MenuItem>
-                <MenuItem value="Chemistry">Chemistry</MenuItem>
-                <MenuItem value="English">English</MenuItem>
-                <MenuItem value="Biology">Biology</MenuItem>
-                <MenuItem value="Computer Science">Computer Science</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, pt: 0 }}>
-          <Button onClick={() => setAddTeacherOpen(false)} sx={{ borderRadius: 2.5, color: '#64748B' }}>Cancel</Button>
-          <Button onClick={() => setAddTeacherOpen(false)} variant="contained" sx={{ borderRadius: 2.5, px: 3, boxShadow: 'none' }}>Appoint</Button>
-        </DialogActions>
-      </Dialog>
+            {/* Main Management Tabs */}
+            <Grid item xs={12}>
+              <motion.div variants={itemVariants}>
+                <DashboardPaper>
+                  <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)} variant="scrollable" scrollButtons="auto" sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
+                    <Tab label="Teacher Management" />
+                    <Tab label="Student Records" />
+                    <Tab label="Class Management" />
+                    <Tab label="Analytics" />
+                    <Tab label="Audit Log" />
+                  </Tabs>
 
-      {/* Create Class Dialog */}
-      <Dialog open={createClassOpen} onClose={() => setCreateClassOpen(false)} PaperProps={{ sx: { borderRadius: 4, width: '100%', maxWidth: 500 } }}>
-        <DialogTitle sx={{ borderBottom: '1px solid', borderColor: '#F1F5F9', pb: 2 }}>
-          <Typography variant="h6" fontWeight="bold">Create New Class</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
-            <FormControl fullWidth>
-              <InputLabel>Grade</InputLabel>
-              <Select value={newClass.grade} label="Grade" onChange={(e) => setNewClass({ ...newClass, grade: e.target.value })}>
-                {[8, 9, 10, 11, 12].map(g => <MenuItem key={g} value={String(g)}>Grade {g}</MenuItem>)}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Section</InputLabel>
-              <Select value={newClass.section} label="Section" onChange={(e) => setNewClass({ ...newClass, section: e.target.value })}>
-                {['A', 'B', 'C', 'D'].map(s => <MenuItem key={s} value={s}>Section {s}</MenuItem>)}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Class Teacher</InputLabel>
-              <Select value={newClass.classTeacher} label="Class Teacher" onChange={(e) => setNewClass({ ...newClass, classTeacher: e.target.value })}>
-                {teachers.filter(t => t.status === 'active').map(t => <MenuItem key={t.id} value={t.name}>{t.name} ({t.subject})</MenuItem>)}
-              </Select>
-            </FormControl>
-            <TextField label="Max Capacity" type="number" fullWidth value={newClass.capacity} onChange={(e) => setNewClass({ ...newClass, capacity: e.target.value })} />
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, pt: 0 }}>
-          <Button onClick={() => setCreateClassOpen(false)} sx={{ borderRadius: 2.5, color: '#64748B' }}>Cancel</Button>
-          <Button onClick={() => setCreateClassOpen(false)} variant="contained" sx={{ borderRadius: 2.5, px: 3, boxShadow: 'none' }}>Create</Button>
-        </DialogActions>
-      </Dialog>
+                  {/* Tab 0: Teacher Management */}
+                  {activeTab === 0 && (
+                    <Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                        <Button startIcon={<PersonAdd />} variant="contained" onClick={() => setAddTeacherOpen(true)} sx={{ borderRadius: 2, textTransform: 'none' }}>
+                          Appoint New Teacher
+                        </Button>
+                      </Box>
+                      <TableContainer>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><strong>Teacher</strong></TableCell>
+                              <TableCell><strong>Subject</strong></TableCell>
+                              <TableCell><strong>Classes</strong></TableCell>
+                              <TableCell><strong>Students</strong></TableCell>
+                              <TableCell><strong>Joined</strong></TableCell>
+                              <TableCell><strong>Status</strong></TableCell>
+                              <TableCell align="right"><strong>Actions</strong></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {teachers.map((t) => (
+                              <TableRow key={t.id} hover>
+                                <TableCell>
+                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: t.status === 'active' ? 'primary.light' : 'grey.300' }}>
+                                      {t.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                                    </Avatar>
+                                    <Typography variant="body2" fontWeight="600">{t.name}</Typography>
+                                  </Box>
+                                </TableCell>
+                                <TableCell>{t.subject}</TableCell>
+                                <TableCell>
+                                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                                    {t.classes.map(c => <Chip key={c} label={c} size="small" sx={{ height: 20, fontSize: '0.65rem' }} />)}
+                                  </Box>
+                                </TableCell>
+                                <TableCell>{t.students}</TableCell>
+                                <TableCell>{t.joinDate}</TableCell>
+                                <TableCell><StatusChip status={t.status} /></TableCell>
+                                <TableCell align="right">
+                                  <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+                                    <IconButton size="small" color="primary"><EditIcon fontSize="small" /></IconButton>
+                                    <IconButton size="small"><Visibility fontSize="small" /></IconButton>
+                                    <IconButton size="small" color={t.status === 'active' ? 'error' : 'success'}>
+                                      {t.status === 'active' ? <Cancel fontSize="small" /> : <CheckCircle fontSize="small" />}
+                                    </IconButton>
+                                  </Box>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  )}
 
-      {/* Broadcast Dialog */}
-      <Dialog open={broadcastOpen} onClose={() => setBroadcastOpen(false)} PaperProps={{ sx: { borderRadius: 4, width: '100%', maxWidth: 500 } }}>
-        <DialogTitle sx={{ borderBottom: '1px solid', borderColor: '#F1F5F9', pb: 2 }}>
-          <Typography variant="h6" fontWeight="bold">Broadcast Announcement</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
-            <TextField label="Title" fullWidth value={broadcastMessage.title} onChange={(e) => setBroadcastMessage({ ...broadcastMessage, title: e.target.value })} />
-            <TextField label="Message" multiline rows={4} fullWidth value={broadcastMessage.message} onChange={(e) => setBroadcastMessage({ ...broadcastMessage, message: e.target.value })} />
-            <FormControl fullWidth>
-              <InputLabel>Target Audience</InputLabel>
-              <Select value={broadcastMessage.target} label="Target Audience" onChange={(e) => setBroadcastMessage({ ...broadcastMessage, target: e.target.value })}>
-                <MenuItem value="all">All Users</MenuItem>
-                <MenuItem value="teachers">Teachers Only</MenuItem>
-                <MenuItem value="students">Students Only</MenuItem>
-                <MenuItem value="parents">Parents Only</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5, pt: 0 }}>
-          <Button onClick={() => setBroadcastOpen(false)} sx={{ borderRadius: 2.5, color: '#64748B' }}>Cancel</Button>
-          <Button onClick={() => setBroadcastOpen(false)} variant="contained" startIcon={<SendIcon size={16} />} sx={{ borderRadius: 2.5, px: 3, boxShadow: 'none' }}>Send</Button>
-        </DialogActions>
-      </Dialog>
+                  {/* Tab 1: Student Records */}
+                  {activeTab === 1 && (
+                    <Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 1 }}>
+                        <Button startIcon={<ArrowUpward />} variant="outlined" onClick={() => setPromotionOpen(true)} sx={{ borderRadius: 2, textTransform: 'none' }}>
+                          Promote Students
+                        </Button>
+                        <Button startIcon={<PersonAdd />} variant="contained" sx={{ borderRadius: 2, textTransform: 'none' }}>
+                          Enroll Student
+                        </Button>
+                      </Box>
+                      <TableContainer>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><strong>Student</strong></TableCell>
+                              <TableCell><strong>Grade</strong></TableCell>
+                              <TableCell><strong>Section</strong></TableCell>
+                              <TableCell><strong>Attendance</strong></TableCell>
+                              <TableCell><strong>GPA</strong></TableCell>
+                              <TableCell><strong>Parent</strong></TableCell>
+                              <TableCell><strong>Status</strong></TableCell>
+                              <TableCell align="right"><strong>Actions</strong></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {students.map((s) => (
+                              <TableRow key={s.id} hover>
+                                <TableCell>
+                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: 'primary.light' }}>
+                                      {s.name.split(' ').map(n => n[0]).join('')}
+                                    </Avatar>
+                                    <Typography variant="body2" fontWeight="600">{s.name}</Typography>
+                                  </Box>
+                                </TableCell>
+                                <TableCell>{s.grade}</TableCell>
+                                <TableCell>{s.section}</TableCell>
+                                <TableCell>
+                                  <ProgressWithLabel value={s.attendance} color={s.attendance >= 90 ? '#4caf50' : s.attendance >= 75 ? '#ff9800' : '#f44336'} />
+                                </TableCell>
+                                <TableCell>
+                                  <Chip label={s.gpa.toFixed(1)} size="small" color={s.gpa >= 3.5 ? 'success' : s.gpa >= 2.5 ? 'warning' : 'error'} sx={{ fontWeight: 700, borderRadius: 1 }} />
+                                </TableCell>
+                                <TableCell><Typography variant="caption">{s.parentName}</Typography></TableCell>
+                                <TableCell><StatusChip status={s.status} /></TableCell>
+                                <TableCell align="right">
+                                  <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+                                    <IconButton size="small"><Visibility fontSize="small" /></IconButton>
+                                    <IconButton size="small" color="primary"><EditIcon fontSize="small" /></IconButton>
+                                  </Box>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  )}
 
-      {/* Promotion Dialog */}
-      <Dialog open={promotionOpen} onClose={() => setPromotionOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4 } }}>
-        <DialogTitle sx={{ borderBottom: '1px solid', borderColor: '#F1F5F9', pb: 2 }}>
-          <Typography variant="h6" fontWeight="bold">Student Promotion</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
-            <FormControl fullWidth>
-              <InputLabel>Source Grade</InputLabel>
-              <Select label="Source Grade">
-                {[10, 11, 12].map(g => <MenuItem key={g} value={g}>Grade {g}</MenuItem>)}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Section</InputLabel>
-              <Select label="Section">
-                {['A', 'B', 'All'].map(s => <MenuItem key={s} value={s}>{s === 'All' ? 'All Sections' : `Section ${s}`}</MenuItem>)}
-              </Select>
-            </FormControl>
-            <Card elevation={0} sx={{ border: '1px solid', borderColor: '#E2E8F0', borderRadius: 3, p: 2.5, bgcolor: '#F8FAFC' }}>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom sx={{ color: '#1E293B' }}>Promotion Criteria</Typography>
-              <Typography variant="body2" color="text.secondary">Min Attendance: 75%</Typography>
-              <Typography variant="body2" color="text.secondary">Min GPA: 2.0</Typography>
-              <Typography variant="body2" color="text.secondary">No failed core subjects</Typography>
-            </Card>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-              Eligible students will be moved to the next grade. Students not meeting criteria will be marked for detention with a reason.
-            </Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2.5 }}>
-          <Button onClick={() => setPromotionOpen(false)} sx={{ borderRadius: 2.5, color: '#64748B' }}>Cancel</Button>
-          <Button onClick={() => setPromotionOpen(false)} variant="contained" startIcon={<ArrowUpward size={16} />} sx={{ borderRadius: 2.5, px: 3, boxShadow: 'none' }}>Promote Eligible</Button>
-        </DialogActions>
-      </Dialog>
+                  {/* Tab 2: Class Management */}
+                  {activeTab === 2 && (
+                    <Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                        <Button startIcon={<AddIcon />} variant="contained" onClick={() => setCreateClassOpen(true)} sx={{ borderRadius: 2, textTransform: 'none' }}>
+                          Create Class
+                        </Button>
+                      </Box>
+                      <Grid container spacing={2}>
+                        {classRecords.map((cls) => (
+                          <Grid item xs={12} sm={6} md={4} key={cls.id}>
+                            <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' } }}>
+                              <CardContent>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                  <Typography variant="h6" fontWeight="bold">
+                                    Grade {cls.grade} - {cls.section}
+                                  </Typography>
+                                  <IconButton size="small"><EditIcon fontSize="small" /></IconButton>
+                                </Box>
+                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                  Class Teacher: {cls.classTeacher}
+                                </Typography>
+                                <Box sx={{ mt: 2, mb: 1 }}>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                    <Typography variant="caption" color="text.secondary">Capacity</Typography>
+                                    <Typography variant="caption" fontWeight="bold">{cls.students}/{cls.capacity}</Typography>
+                                  </Box>
+                                  <ProgressWithLabel value={Math.round((cls.students / cls.capacity) * 100)} color={cls.students / cls.capacity > 0.9 ? '#f44336' : '#4caf50'} />
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
+                                  <Chip label={`${cls.students} Students`} size="small" icon={<School sx={{ fontSize: '14px !important' }} />} sx={{ borderRadius: 1, fontSize: '0.7rem' }} />
+                                  <Chip label={`${cls.subjects} Subjects`} size="small" variant="outlined" sx={{ borderRadius: 1, fontSize: '0.7rem' }} />
+                                </Box>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* Tab 3: Analytics */}
+                  {activeTab === 3 && (
+                    <Box>
+                      <Grid container spacing={3}>
+                        {/* Enrollment Trend */}
+                        <Grid item xs={12} md={6}>
+                          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Enrollment Trend</Typography>
+                          {analyticsData.enrollmentTrend.map((item) => (
+                            <Box key={item.year} sx={{ mb: 1.5 }}>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                <Typography variant="body2">{item.year}</Typography>
+                                <Typography variant="body2" fontWeight="bold">{item.count} students</Typography>
+                              </Box>
+                              <ProgressWithLabel value={Math.round((item.count / 200) * 100)} color="linear-gradient(90deg, #667eea, #764ba2)" />
+                            </Box>
+                          ))}
+                        </Grid>
+
+                        {/* Attendance by Grade */}
+                        <Grid item xs={12} md={6}>
+                          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Attendance by Grade</Typography>
+                          {analyticsData.attendanceByGrade.map((item) => (
+                            <Box key={item.grade} sx={{ mb: 1.5 }}>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                <Typography variant="body2">{item.grade} Grade</Typography>
+                                <Typography variant="body2" fontWeight="bold">{item.avg}%</Typography>
+                              </Box>
+                              <ProgressWithLabel value={item.avg} color={item.avg >= 90 ? '#4caf50' : item.avg >= 80 ? '#ff9800' : '#f44336'} />
+                            </Box>
+                          ))}
+                        </Grid>
+
+                        {/* Performance by Subject */}
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Average Performance by Subject</Typography>
+                          <Grid container spacing={2}>
+                            {analyticsData.performanceBySubject.map((item) => (
+                              <Grid item xs={12} sm={6} md={2.4} key={item.subject}>
+                                <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, textAlign: 'center', p: 2 }}>
+                                  <Typography variant="h4" fontWeight="bold" color={item.avg >= 80 ? 'success.main' : item.avg >= 70 ? 'warning.main' : 'error.main'}>
+                                    {item.avg}%
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary">{item.subject}</Typography>
+                                </Card>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* Tab 4: Audit Log */}
+                  {activeTab === 4 && (
+                    <Box>
+                      <List disablePadding>
+                        {auditLog.map((entry) => (
+                          <ListItem
+                            key={entry.id}
+                            sx={{ mb: 1, borderRadius: 2, border: '1px solid', borderColor: 'divider', borderLeft: '4px solid', borderLeftColor: getAuditColor(entry.type) }}
+                          >
+                            <ListItemAvatar>
+                              <Avatar sx={{ bgcolor: `${getAuditColor(entry.type)}20`, color: getAuditColor(entry.type), width: 36, height: 36 }}>
+                                {entry.type === 'teacher' ? <People sx={{ fontSize: 18 }} /> :
+                                  entry.type === 'student' ? <School sx={{ fontSize: 18 }} /> :
+                                    entry.type === 'class' ? <Class sx={{ fontSize: 18 }} /> :
+                                      entry.type === 'announcement' ? <Announcement sx={{ fontSize: 18 }} /> :
+                                        <Settings sx={{ fontSize: 18 }} />}
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <Typography variant="body2" fontWeight="600">{entry.action}</Typography>
+                                  <Typography variant="caption" color="text.secondary">{entry.timestamp}</Typography>
+                                </Box>
+                              }
+                              secondary={
+                                <Typography variant="caption" color="text.secondary">{entry.details}</Typography>
+                              }
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+                </DashboardPaper>
+              </motion.div>
+            </Grid>
+
+            {/* Quick Actions */}
+            <Grid item xs={12} md={8}>
+              <motion.div variants={itemVariants}>
+                <DashboardPaper>
+                  <SectionTitle variant="h6">Quick Actions</SectionTitle>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6} sm={4}>
+                      <Button fullWidth variant="outlined" startIcon={<PersonAdd />} onClick={() => setAddTeacherOpen(true)} sx={{ py: 2, borderRadius: 2, textTransform: 'none' }}>
+                        Appoint Teacher
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm={4}>
+                      <Button fullWidth variant="outlined" startIcon={<Class />} onClick={() => setCreateClassOpen(true)} sx={{ py: 2, borderRadius: 2, textTransform: 'none' }}>
+                        Create Class
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm={4}>
+                      <Button fullWidth variant="outlined" startIcon={<Announcement />} onClick={() => setBroadcastOpen(true)} sx={{ py: 2, borderRadius: 2, textTransform: 'none' }}>
+                        Broadcast
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm={4}>
+                      <Button fullWidth variant="outlined" startIcon={<ArrowUpward />} onClick={() => setPromotionOpen(true)} sx={{ py: 2, borderRadius: 2, textTransform: 'none' }}>
+                        Promote Students
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm={4}>
+                      <Button fullWidth variant="outlined" startIcon={<Settings />} sx={{ py: 2, borderRadius: 2, textTransform: 'none' }}>
+                        System Config
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm={4}>
+                      <Button fullWidth variant="outlined" startIcon={<BarChart />} sx={{ py: 2, borderRadius: 2, textTransform: 'none' }}>
+                        Export Reports
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </DashboardPaper>
+              </motion.div>
+            </Grid>
+
+            {/* Hierarchy Config Summary */}
+            <Grid item xs={12} md={4}>
+              <motion.div variants={itemVariants}>
+                <DashboardPaper>
+                  <SectionTitle variant="h6">System Config</SectionTitle>
+                  <List dense disablePadding>
+                    <ListItem sx={{ px: 0 }}>
+                      <ListItemIcon sx={{ minWidth: 36 }}><CalendarMonth color="primary" /></ListItemIcon>
+                      <ListItemText primary={<Typography variant="body2" fontWeight="600">Academic Year</Typography>} secondary="2025-2026" />
+                    </ListItem>
+                    <Divider />
+                    <ListItem sx={{ px: 0 }}>
+                      <ListItemIcon sx={{ minWidth: 36 }}><Assessment color="secondary" /></ListItemIcon>
+                      <ListItemText primary={<Typography variant="body2" fontWeight="600">Grading Scale</Typography>} secondary="A+ (90%), A (80%), B+ (70%), B (60%)" />
+                    </ListItem>
+                    <Divider />
+                    <ListItem sx={{ px: 0 }}>
+                      <ListItemIcon sx={{ minWidth: 36 }}><AdminPanelSettings color="info" /></ListItemIcon>
+                      <ListItemText primary={<Typography variant="body2" fontWeight="600">Term Structure</Typography>} secondary="3 Terms (Apr-Jul, Aug-Nov, Dec-Mar)" />
+                    </ListItem>
+                    <Divider />
+                    <ListItem sx={{ px: 0 }}>
+                      <ListItemIcon sx={{ minWidth: 36 }}><ArrowUpward color="success" /></ListItemIcon>
+                      <ListItemText primary={<Typography variant="body2" fontWeight="600">Promotion Criteria</Typography>} secondary="Min 75% attendance, Min 2.0 GPA" />
+                    </ListItem>
+                  </List>
+                </DashboardPaper>
+              </motion.div>
+            </Grid>
+          </Grid>
+
+        {/* Add Teacher Dialog */}
+        <Dialog open={addTeacherOpen} onClose={() => setAddTeacherOpen(false)} PaperProps={{ sx: { borderRadius: 3, width: '100%', maxWidth: 500 } }}>
+          <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider', pb: 2 }}>
+            <Typography variant="h6" fontWeight="bold">Appoint New Teacher</Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
+              <TextField label="Full Name" fullWidth value={newTeacher.name} onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })} />
+              <TextField label="Email" type="email" fullWidth value={newTeacher.email} onChange={(e) => setNewTeacher({ ...newTeacher, email: e.target.value })} />
+              <TextField label="Phone" fullWidth value={newTeacher.phone} onChange={(e) => setNewTeacher({ ...newTeacher, phone: e.target.value })} />
+              <FormControl fullWidth>
+                <InputLabel>Subject / Specialization</InputLabel>
+                <Select value={newTeacher.subject} label="Subject / Specialization" onChange={(e) => setNewTeacher({ ...newTeacher, subject: e.target.value })}>
+                  <MenuItem value="Mathematics">Mathematics</MenuItem>
+                  <MenuItem value="Physics">Physics</MenuItem>
+                  <MenuItem value="Chemistry">Chemistry</MenuItem>
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="Biology">Biology</MenuItem>
+                  <MenuItem value="Computer Science">Computer Science</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 2.5, pt: 0 }}>
+            <Button onClick={() => setAddTeacherOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+            <Button onClick={() => setAddTeacherOpen(false)} variant="contained" sx={{ borderRadius: 2, px: 3 }}>Appoint</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Create Class Dialog */}
+        <Dialog open={createClassOpen} onClose={() => setCreateClassOpen(false)} PaperProps={{ sx: { borderRadius: 3, width: '100%', maxWidth: 500 } }}>
+          <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider', pb: 2 }}>
+            <Typography variant="h6" fontWeight="bold">Create New Class</Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel>Grade</InputLabel>
+                <Select value={newClass.grade} label="Grade" onChange={(e) => setNewClass({ ...newClass, grade: e.target.value })}>
+                  {[8, 9, 10, 11, 12].map(g => <MenuItem key={g} value={String(g)}>Grade {g}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Section</InputLabel>
+                <Select value={newClass.section} label="Section" onChange={(e) => setNewClass({ ...newClass, section: e.target.value })}>
+                  {['A', 'B', 'C', 'D'].map(s => <MenuItem key={s} value={s}>Section {s}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Class Teacher</InputLabel>
+                <Select value={newClass.classTeacher} label="Class Teacher" onChange={(e) => setNewClass({ ...newClass, classTeacher: e.target.value })}>
+                  {teachers.filter(t => t.status === 'active').map(t => <MenuItem key={t.id} value={t.name}>{t.name} ({t.subject})</MenuItem>)}
+                </Select>
+              </FormControl>
+              <TextField label="Max Capacity" type="number" fullWidth value={newClass.capacity} onChange={(e) => setNewClass({ ...newClass, capacity: e.target.value })} />
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 2.5, pt: 0 }}>
+            <Button onClick={() => setCreateClassOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+            <Button onClick={() => setCreateClassOpen(false)} variant="contained" sx={{ borderRadius: 2, px: 3 }}>Create</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Broadcast Dialog */}
+        <Dialog open={broadcastOpen} onClose={() => setBroadcastOpen(false)} PaperProps={{ sx: { borderRadius: 3, width: '100%', maxWidth: 500 } }}>
+          <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider', pb: 2 }}>
+            <Typography variant="h6" fontWeight="bold">Broadcast Announcement</Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
+              <TextField label="Title" fullWidth value={broadcastMessage.title} onChange={(e) => setBroadcastMessage({ ...broadcastMessage, title: e.target.value })} />
+              <TextField label="Message" multiline rows={4} fullWidth value={broadcastMessage.message} onChange={(e) => setBroadcastMessage({ ...broadcastMessage, message: e.target.value })} />
+              <FormControl fullWidth>
+                <InputLabel>Target Audience</InputLabel>
+                <Select value={broadcastMessage.target} label="Target Audience" onChange={(e) => setBroadcastMessage({ ...broadcastMessage, target: e.target.value })}>
+                  <MenuItem value="all">All Users</MenuItem>
+                  <MenuItem value="teachers">Teachers Only</MenuItem>
+                  <MenuItem value="students">Students Only</MenuItem>
+                  <MenuItem value="parents">Parents Only</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 2.5, pt: 0 }}>
+            <Button onClick={() => setBroadcastOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+            <Button onClick={() => setBroadcastOpen(false)} variant="contained" startIcon={<Send />} sx={{ borderRadius: 2, px: 3 }}>Send</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Promotion Dialog */}
+        <Dialog open={promotionOpen} onClose={() => setPromotionOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+          <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider', pb: 2 }}>
+            <Typography variant="h6" fontWeight="bold">Student Promotion</Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel>Source Grade</InputLabel>
+                <Select label="Source Grade">
+                  {[10, 11, 12].map(g => <MenuItem key={g} value={g}>Grade {g}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Section</InputLabel>
+                <Select label="Section">
+                  {['A', 'B', 'All'].map(s => <MenuItem key={s} value={s}>{s === 'All' ? 'All Sections' : `Section ${s}`}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 2 }}>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>Promotion Criteria</Typography>
+                <Typography variant="body2" color="text.secondary">Min Attendance: 75%</Typography>
+                <Typography variant="body2" color="text.secondary">Min GPA: 2.0</Typography>
+                <Typography variant="body2" color="text.secondary">No failed core subjects</Typography>
+              </Card>
+              <Typography variant="body2" color="text.secondary">
+                Eligible students will be moved to the next grade. Students not meeting criteria will be marked for detention with a reason.
+              </Typography>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 2.5 }}>
+            <Button onClick={() => setPromotionOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+            <Button onClick={() => setPromotionOpen(false)} variant="contained" startIcon={<ArrowUpward />} sx={{ borderRadius: 2, px: 3 }}>Promote Eligible</Button>
+          </DialogActions>
+        </Dialog>
+      </motion.div>
     </DashboardLayout>
   );
 };
